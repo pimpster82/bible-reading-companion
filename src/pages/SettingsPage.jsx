@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { SUPPORTED_LANGUAGES, getCurrentLanguage, setCurrentLanguage } from '../config/languages'
 import { fetchScheduleFromWOL, fetchYeartextFromWOL, generateScheduleModule, generateYeartextModule, updateLoaderFile, downloadSchedulePackage } from '../utils/scheduleUpdater'
 import loaderFileContent from '../../data/weekly-reading-schedule.js?raw'
+import { t } from '../config/i18n'
 
 const SettingsPage = () => {
   const navigate = useNavigate()
@@ -76,7 +77,7 @@ Diese Funktion wird in einer zukünftigen Version implementiert. Der Leseplan wi
 
 
   const handleResetAll = () => {
-    if (window.confirm('Alle Einstellungen zurücksetzen? Dies löscht NICHT deine Lesefortschritte.')) {
+    if (window.confirm(t('settings.reset_confirm'))) {
       // Reset to defaults
       localStorage.removeItem('settings_meetingDay')
       localStorage.removeItem('settings_readingPlan')
@@ -90,7 +91,7 @@ Diese Funktion wird in einer zukünftigen Version implementiert. Der Leseplan wi
   }
 
   const handleResetProgress = () => {
-    if (window.confirm('Möchtest du wirklich ALLE Lesefortschritte zurücksetzen? Dies kann nicht rückgängig gemacht werden!')) {
+    if (window.confirm(t('settings.reset_progress_confirm'))) {
       // Reset all reading progress data
       localStorage.removeItem('bibleCompanion_dailyText') // Daily text streak
       localStorage.removeItem('weeklyReading_current') // Current week progress
@@ -107,7 +108,7 @@ Diese Funktion wird in einer zukünftigen Version implementiert. Der Leseplan wi
       keysToRemove.forEach(key => localStorage.removeItem(key))
 
       // Success message and navigate home instead of reload
-      alert('✅ Lesefortschritt erfolgreich zurückgesetzt!')
+      alert(t('settings.reset_success'))
       setTimeout(() => navigate('/'), 100)
     }
   }
@@ -121,29 +122,29 @@ Diese Funktion wird in einer zukünftigen Version implementiert. Der Leseplan wi
   }
 
   const getMeetingDayName = () => {
-    return weekDays.find(d => d.value === meetingDay)?.label || 'Montag'
+    return weekDays.find(d => d.value === meetingDay)?.label || t('weekday.monday')
   }
 
   const getReadingPlanName = () => {
-    return readingPlans.find(p => p.value === readingPlan)?.label || 'Freies Lesen'
+    return readingPlans.find(p => p.value === readingPlan)?.label || t('readingplan.free')
   }
 
   const weekDays = [
-    { value: '0', label: 'Sonntag' },
-    { value: '1', label: 'Montag' },
-    { value: '2', label: 'Dienstag' },
-    { value: '3', label: 'Mittwoch' },
-    { value: '4', label: 'Donnerstag' },
-    { value: '5', label: 'Freitag' },
-    { value: '6', label: 'Samstag' }
+    { value: '0', label: t('weekday.sunday') },
+    { value: '1', label: t('weekday.monday') },
+    { value: '2', label: t('weekday.tuesday') },
+    { value: '3', label: t('weekday.wednesday') },
+    { value: '4', label: t('weekday.thursday') },
+    { value: '5', label: t('weekday.friday') },
+    { value: '6', label: t('weekday.saturday') }
   ]
 
   const readingPlans = [
-    { value: 'free', label: 'Freies Lesen (Bible Tree)' },
-    { value: '1year', label: 'Bibel in 1 Jahr' },
-    { value: '2years', label: 'Bibel in 2 Jahren' },
-    { value: 'chronological', label: 'Chronologisch' },
-    { value: 'bookByBook', label: 'Buch für Buch' }
+    { value: 'free', label: t('readingplan.free') },
+    { value: '1year', label: t('readingplan.1year') },
+    { value: '2years', label: t('readingplan.2years') },
+    { value: 'chronological', label: t('readingplan.chronological') },
+    { value: 'bookByBook', label: t('readingplan.bookbybook') }
   ]
 
   return (
@@ -156,14 +157,14 @@ Diese Funktion wird in einer zukünftigen Version implementiert. Der Leseplan wi
             className="flex items-center gap-2 text-gray-700 hover:text-gray-900 mb-4"
           >
             <ArrowLeft className="w-5 h-5" />
-            Zurück
+            {t('nav.back')}
           </button>
 
           <h1 className="text-2xl font-bold text-gray-800 mb-2">
-            Einstellungen
+            {t('settings.title')}
           </h1>
           <p className="text-sm text-gray-600">
-            Passe die App an deine Bedürfnisse an
+            {t('settings.subtitle')}
           </p>
         </div>
 
@@ -175,7 +176,7 @@ Diese Funktion wird in einer zukünftigen Version implementiert. Der Leseplan wi
           >
             <div className="flex items-center gap-2">
               <Globe className="w-5 h-5 text-blue-600" />
-              <h2 className="font-semibold text-gray-800">Sprache</h2>
+              <h2 className="font-semibold text-gray-800">{t('settings.language')}</h2>
             </div>
             <div className="flex items-center gap-2">
               <span className="text-sm text-gray-600">{getLanguageName()}</span>
@@ -209,7 +210,7 @@ Diese Funktion wird in einer zukünftigen Version implementiert. Der Leseplan wi
               </div>
 
               <p className="text-xs text-gray-500 mt-3">
-                Die App wird neu geladen um die Sprache zu ändern
+                {t('settings.language_note')}
               </p>
             </div>
           )}
@@ -223,7 +224,7 @@ Diese Funktion wird in einer zukünftigen Version implementiert. Der Leseplan wi
           >
             <div className="flex items-center gap-2">
               <Calendar className="w-5 h-5 text-blue-600" />
-              <h2 className="font-semibold text-gray-800">Wöchentliches Lesen</h2>
+              <h2 className="font-semibold text-gray-800">{t('settings.weekly_reading')}</h2>
             </div>
             <div className="flex items-center gap-2">
               <span className="text-sm text-gray-600">{getMeetingDayName()}</span>
@@ -240,7 +241,7 @@ Diese Funktion wird in einer zukünftigen Version implementiert. Der Leseplan wi
               {/* Meeting Day */}
               <div>
                 <label className="text-sm font-medium text-gray-700 block mb-2">
-                  Versammlungstag
+                  {t('settings.meeting_day')}
                 </label>
                 <select
                   value={meetingDay}
@@ -254,7 +255,7 @@ Diese Funktion wird in einer zukünftigen Version implementiert. Der Leseplan wi
                   ))}
                 </select>
                 <p className="text-xs text-gray-500 mt-1">
-                  Die Woche läuft von einem Versammlungstag zum nächsten
+                  {t('settings.meeting_day_note')}
                 </p>
               </div>
             </div>
@@ -269,7 +270,7 @@ Diese Funktion wird in einer zukünftigen Version implementiert. Der Leseplan wi
           >
             <div className="flex items-center gap-2">
               <BookOpen className="w-5 h-5 text-blue-600" />
-              <h2 className="font-semibold text-gray-800">Persönliches Bibellesen</h2>
+              <h2 className="font-semibold text-gray-800">{t('settings.personal_plan')}</h2>
             </div>
             <div className="flex items-center gap-2">
               <span className="text-sm text-gray-600">{getReadingPlanName()}</span>
@@ -285,7 +286,7 @@ Diese Funktion wird in einer zukünftigen Version implementiert. Der Leseplan wi
             <div className="mt-4 pt-4 border-t border-gray-200">
               <div>
                 <label className="text-sm font-medium text-gray-700 block mb-2">
-                  Leseplan
+                  {t('settings.reading_plan')}
                 </label>
                 <select
                   value={readingPlan}
@@ -299,7 +300,7 @@ Diese Funktion wird in einer zukünftigen Version implementiert. Der Leseplan wi
                   ))}
                 </select>
                 <p className="text-xs text-gray-500 mt-1">
-                  Wähle wie du die Bibel lesen möchtest
+                  {t('settings.reading_plan_note')}
                 </p>
               </div>
             </div>
@@ -314,7 +315,7 @@ Diese Funktion wird in einer zukünftigen Version implementiert. Der Leseplan wi
           >
             <div className="flex items-center gap-2">
               <Bell className="w-5 h-5 text-blue-600" />
-              <h2 className="font-semibold text-gray-800">Erinnerungen</h2>
+              <h2 className="font-semibold text-gray-800">{t('settings.notifications')}</h2>
             </div>
             <div className="flex items-center gap-2">
               <span className="text-sm text-gray-600">
@@ -333,8 +334,8 @@ Diese Funktion wird in einer zukünftigen Version implementiert. Der Leseplan wi
               {/* Daily Reminder Toggle */}
               <div className="flex items-center justify-between mb-3">
                 <div>
-                  <p className="text-sm font-medium text-gray-700">Tägliche Erinnerung</p>
-                  <p className="text-xs text-gray-500">Für Tagestext</p>
+                  <p className="text-sm font-medium text-gray-700">{t('settings.daily_reminder')}</p>
+                  <p className="text-xs text-gray-500">{t('settings.for_daily_text')}</p>
                 </div>
                 <button
                   onClick={handleDailyReminderToggle}
@@ -354,7 +355,7 @@ Diese Funktion wird in einer zukünftigen Version implementiert. Der Leseplan wi
               {dailyReminder && (
                 <div>
                   <label className="text-sm font-medium text-gray-700 block mb-2">
-                    Uhrzeit
+                    {t('settings.reminder_time')}
                   </label>
                   <input
                     type="time"
@@ -366,7 +367,7 @@ Diese Funktion wird in einer zukünftigen Version implementiert. Der Leseplan wi
               )}
 
               <p className="text-xs text-gray-500 mt-3">
-                ⚠️ Benachrichtigungen werden in einer späteren Version implementiert
+                {t('settings.reminders_coming')}
               </p>
             </div>
           )}
@@ -380,7 +381,7 @@ Diese Funktion wird in einer zukünftigen Version implementiert. Der Leseplan wi
           >
             <div className="flex items-center gap-2">
               <Download className="w-5 h-5 text-blue-600" />
-              <h2 className="font-semibold text-gray-800">Leseplan aktualisieren</h2>
+              <h2 className="font-semibold text-gray-800">{t('settings.schedule_update')}</h2>
             </div>
             {expandedSection === 'schedule' ? (
               <ChevronDown className="w-5 h-5 text-gray-400" />
@@ -398,7 +399,7 @@ Diese Funktion wird in einer zukünftigen Version implementiert. Der Leseplan wi
               {/* Year Input */}
               <div className="mb-3">
                 <label className="text-sm font-medium text-gray-700 block mb-2">
-                  Jahr
+                  {t('settings.schedule_year')}
                 </label>
                 <input
                   type="number"
@@ -423,12 +424,12 @@ Diese Funktion wird in einer zukünftigen Version implementiert. Der Leseplan wi
                 {scheduleStatus === 'loading' ? (
                   <>
                     <RefreshCw className="w-4 h-4 animate-spin" />
-                    Lädt...
+                    {t('settings.downloading')}
                   </>
                 ) : (
                   <>
                     <Download className="w-4 h-4" />
-                    Leseplan herunterladen
+                    {t('settings.download_schedule')}
                   </>
                 )}
               </button>
@@ -450,7 +451,7 @@ Diese Funktion wird in einer zukünftigen Version implementiert. Der Leseplan wi
 
               <div className="text-xs text-gray-500 mt-3 space-y-1">
                 <p className="text-gray-600">
-                  Der Leseplan wird automatisch aus den vorhandenen Dateien geladen.
+                  {t('settings.schedule_loading')}
                 </p>
               </div>
             </div>
@@ -465,7 +466,7 @@ Diese Funktion wird in einer zukünftigen Version implementiert. Der Leseplan wi
           >
             <div className="flex items-center gap-2">
               <RotateCcw className="w-5 h-5 text-red-600" />
-              <h2 className="font-semibold text-gray-800">Zurücksetzen</h2>
+              <h2 className="font-semibold text-gray-800">{t('settings.reset')}</h2>
             </div>
             {expandedSection === 'reset' ? (
               <ChevronDown className="w-5 h-5 text-gray-400" />
@@ -478,29 +479,29 @@ Diese Funktion wird in einer zukünftigen Version implementiert. Der Leseplan wi
             <div className="mt-4 pt-4 border-t border-red-200 space-y-3">
               {/* Reset Settings */}
               <div>
-                <p className="text-sm font-medium text-gray-700 mb-2">Einstellungen zurücksetzen</p>
+                <p className="text-sm font-medium text-gray-700 mb-2">{t('settings.reset_settings')}</p>
                 <p className="text-xs text-gray-600 mb-2">
-                  Setze alle Einstellungen auf Standardwerte zurück. Deine Lesefortschritte bleiben erhalten.
+                  {t('settings.reset_settings_note')}
                 </p>
                 <button
                   onClick={handleResetAll}
                   className="w-full bg-red-50 text-red-700 py-2 px-4 rounded-lg font-medium hover:bg-red-100 transition-colors border border-red-200"
                 >
-                  Alle Einstellungen zurücksetzen
+                  {t('settings.reset_settings_button')}
                 </button>
               </div>
 
               {/* Reset Progress */}
               <div className="pt-3 border-t border-red-200">
-                <p className="text-sm font-medium text-gray-700 mb-2">Lesefortschritt zurücksetzen</p>
+                <p className="text-sm font-medium text-gray-700 mb-2">{t('settings.reset_progress')}</p>
                 <p className="text-xs text-gray-600 mb-2">
-                  ⚠️ Löscht alle Lesefortschritte (Wöchentliches Lesen, Tagestext, Persönliches Lesen). Deine Einstellungen bleiben erhalten.
+                  {t('settings.reset_progress_note')}
                 </p>
                 <button
                   onClick={handleResetProgress}
                   className="w-full bg-red-100 text-red-800 py-2 px-4 rounded-lg font-medium hover:bg-red-200 transition-colors border border-red-300"
                 >
-                  Lesefortschritt löschen
+                  {t('settings.reset_progress_button')}
                 </button>
               </div>
             </div>
@@ -509,8 +510,8 @@ Diese Funktion wird in einer zukünftigen Version implementiert. Der Leseplan wi
 
         {/* Version Info */}
         <div className="text-center text-xs text-gray-500 mt-6 pb-4">
-          <p>Bible Reading Companion v0.0.1</p>
-          <p className="mt-1">Made with ❤️ for Bible readers</p>
+          <p>{t('settings.version', null, {version: '0.0.1'})}</p>
+          <p className="mt-1">{t('settings.made_with')}</p>
         </div>
       </div>
     </div>

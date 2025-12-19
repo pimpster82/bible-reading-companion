@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Calendar, BookOpen, Lightbulb, ExternalLink, Settings, X } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
+import { t } from '../config/i18n'
 import DailyTextCard from '../components/DailyTextCard'
 import WeeklyReadingCard from '../components/WeeklyReadingCard'
 
@@ -113,7 +114,7 @@ function HomePage() {
               >
                 <Calendar className={`w-5 h-5 ${testDate ? 'text-orange-600' : ''}`} />
               </button>
-              HEUTE - {getFormattedDate()}
+              {t('nav.today')} - {getFormattedDate()}
             </h1>
             <button
               onClick={() => navigate('/settings')}
@@ -128,7 +129,7 @@ function HomePage() {
           {showDatePicker && (
             <div className="mt-3 p-4 bg-white rounded-lg border border-gray-300 shadow-lg">
               <div className="flex items-center justify-between mb-3">
-                <h3 className="font-semibold text-gray-800">Test-Datum wählen</h3>
+                <h3 className="font-semibold text-gray-800">{t('datepicker.title')}</h3>
                 <button
                   onClick={() => setShowDatePicker(false)}
                   className="text-gray-400 hover:text-gray-600"
@@ -149,12 +150,12 @@ function HomePage() {
                   onClick={handleResetDate}
                   className="w-full bg-gray-100 text-gray-700 py-2 px-4 rounded-lg font-medium hover:bg-gray-200 transition-colors text-sm"
                 >
-                  Auf heute zurücksetzen
+                  {t('datepicker.reset')}
                 </button>
               )}
 
               <p className="text-xs text-gray-500 mt-2">
-                ⚠️ Test-Modus: Das Datum wird für alle Komponenten überschrieben
+                {t('datepicker.warning')}
               </p>
             </div>
           )}
@@ -172,25 +173,25 @@ function HomePage() {
           <div className="bg-white rounded-lg p-4 shadow-sm border border-green-100">
             <h2 className="font-semibold text-green-900 mb-3 text-base flex items-center gap-2">
               <BookOpen className="w-4 h-4" />
-              PERSÖNLICHES LESEN (PBP)
+              {t('home.personal_reading')}
             </h2>
 
             <p className="text-sm text-gray-700 mb-2 italic">
-              Plan: Bibel in 1 Jahr
+              {t('home.reading_plan')}
             </p>
 
             <div className="flex items-center gap-1 mb-3">
               <Lightbulb className="w-3 h-3 text-green-700" />
               <p className="text-sm text-gray-700">
-                <span className="text-xs text-gray-600">Als nächstes:</span> <span className="font-medium">Genesis 20-22</span>
+                <span className="text-xs text-gray-600">{t('home.next_reading')}:</span> <span className="font-medium">Genesis 20-22</span>
               </p>
             </div>
 
             <div className="pt-3 border-t border-green-200 flex items-center justify-between">
-              <p className="text-xs text-green-700">Tag 45 von 365 · 12% abgeschlossen</p>
+              <p className="text-xs text-green-700">{t('home.day_progress', null, {current: 45, total: 365, percent: 12})}</p>
               <button className="text-sm text-green-900 font-medium flex items-center gap-1 hover:text-green-700">
                 <ExternalLink className="w-4 h-4" />
-                Öffnen
+                {t('home.open')}
               </button>
             </div>
           </div>
