@@ -272,7 +272,7 @@ const WeeklyReadingPage = () => {
               ></div>
             </div>
             <p className="text-sm text-gray-700">
-              {readCount} von {totalChapters} Kapiteln gelesen · {Math.round(progressPercent)}%
+              {t('weekly.progress', null, { current: readCount, total: totalChapters, percent: Math.round(progressPercent) })}
             </p>
           </div>
         </div>
