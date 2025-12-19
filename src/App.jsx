@@ -7,7 +7,7 @@ import SettingsPage from './pages/SettingsPage'
 
 function App() {
   return (
-    <Router>
+    <Router basename="/bible-reading-companion">
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/weekly" element={<WeeklyReadingPage />} />
