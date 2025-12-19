@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { ExternalLink, Sun, Flame } from 'lucide-react'
 import { t } from '../config/i18n'
+import { getDailyTextUrl } from '../utils/jw-links'
 import {
   isDailyTextComplete,
   markDailyTextComplete,
@@ -33,7 +34,9 @@ const DailyTextCard = () => {
   }
 
   const handleOpenDailyText = () => {
-    window.open('https://wol.jw.org/en/wol/dt/r1/lp-e', '_blank', 'noopener,noreferrer')
+    const language = localStorage.getItem('app_language') || 'de'
+    const url = getDailyTextUrl(language)
+    window.open(url, '_blank', 'noopener,noreferrer')
   }
 
   return (
