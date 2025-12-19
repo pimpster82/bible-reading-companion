@@ -1,0 +1,85 @@
+import React, { useState, useEffect } from 'react'
+import { ExternalLink, Sun, Flame } from 'lucide-react'
+import {
+  isDailyTextComplete,
+  markDailyTextComplete,
+  unmarkDailyTextComplete,
+  getDailyTextData
+} from '../utils/storage'
+
+const DailyTextCard = () => {
+  const [isComplete, setIsComplete] = useState(false)
+  const [streak, setStreak] = useState(0)
+
+  useEffect(() => {
+    // Load initial state
+    const complete = isDailyTextComplete()
+    const data = getDailyTextData()
+    setIsComplete(complete)
+    setStreak(data.currentStreak)
+  }, [])
+
+  const handleToggleComplete = () => {
+    if (isComplete) {
+      const data = unmarkDailyTextComplete()
+      setIsComplete(false)
+      setStreak(data.currentStreak)
+    } else {
+      const data = markDailyTextComplete()
+      setIsComplete(true)
+      setStreak(data.currentStreak)
+    }
+  }
+
+  const handleOpenDailyText = () => {
+    window.open('https://wol.jw.org/en/wol/dt/r1/lp-e', '_blank', 'noopener,noreferrer')
+  }
+
+  return (
+    <div className="bg-white rounded-lg p-4 shadow-sm border border-indigo-100">
+      <h2 className="font-semibold text-indigo-900 mb-3 text-base flex items-center gap-2">
+        <Sun className="w-4 h-4" />
+        TAGESTEXT
+      </h2>
+
+      <p className="text-sm text-gray-700 mb-3 italic">
+        "Let the peace of God rule in your hearts..."
+        <span className="block text-gray-600 mt-1">— Colossians 3:15</span>
+      </p>
+
+      <div className="flex items-center gap-2 mb-3">
+        {!isComplete && (
+          <button
+            onClick={handleToggleComplete}
+            className="text-sm text-gray-600 hover:text-green-600 font-medium"
+          >
+            Als gelesen markieren
+          </button>
+        )}
+      </div>
+
+      <div className="pt-3 border-t border-indigo-200 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          {isComplete && (
+            <p className="text-sm text-green-600 font-medium">✓ Gelesen</p>
+          )}
+          {streak > 0 && (
+            <p className="text-xs text-indigo-700 flex items-center gap-1">
+              <Flame className="w-3 h-3" />
+              <span className="font-bold">{streak} {streak === 1 ? 'Tag' : 'Tage'}</span>
+            </p>
+          )}
+        </div>
+        <button
+          onClick={handleOpenDailyText}
+          className="text-sm text-indigo-900 font-medium flex items-center gap-1 hover:text-indigo-700"
+        >
+          <ExternalLink className="w-4 h-4" />
+          Öffnen
+        </button>
+      </div>
+    </div>
+  )
+}
+
+export default DailyTextCard

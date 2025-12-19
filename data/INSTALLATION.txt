@@ -1,0 +1,12 @@
+# Installation Instructions
+
+1. Kopiere die Datei "weekly-reading-schedule-2024.js" nach:
+   data/weekly-reading-schedule-2024.js
+
+2. Ersetze die Datei "weekly-reading-schedule.js" durch die neue Version:
+   data/weekly-reading-schedule.js
+
+3. Fertig! Die App verwendet jetzt automatisch den Leseplan für 2024.
+
+---
+Generiert: 6.12.2025, 01:52:57

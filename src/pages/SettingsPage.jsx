@@ -1,0 +1,535 @@
+import React, { useState, useEffect } from 'react'
+import { ArrowLeft, Globe, Calendar, Bell, RotateCcw, ChevronDown, ChevronRight, BookOpen, Download, RefreshCw } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import { SUPPORTED_LANGUAGES, getCurrentLanguage, setCurrentLanguage } from '../config/languages'
+import { fetchScheduleFromWOL, fetchYeartextFromWOL, generateScheduleModule, generateYeartextModule, updateLoaderFile, downloadSchedulePackage } from '../utils/scheduleUpdater'
+import loaderFileContent from '../../data/weekly-reading-schedule.js?raw'
+
+const SettingsPage = () => {
+  const navigate = useNavigate()
+
+  // Expanded sections
+  const [expandedSection, setExpandedSection] = useState(null)
+
+  // Language
+  const [language, setLanguage] = useState(getCurrentLanguage())
+
+  // Weekly Reading Settings
+  const [meetingDay, setMeetingDay] = useState(
+    localStorage.getItem('settings_meetingDay') || '1' // Monday default
+  )
+
+  // Personal Reading Settings
+  const [readingPlan, setReadingPlan] = useState(
+    localStorage.getItem('settings_readingPlan') || 'free'
+  )
+
+  // Notifications
+  const [dailyReminder, setDailyReminder] = useState(
+    localStorage.getItem('settings_dailyReminder') === 'true'
+  )
+  const [reminderTime, setReminderTime] = useState(
+    localStorage.getItem('settings_reminderTime') || '08:00'
+  )
+
+  // Schedule Update
+  const [scheduleYear, setScheduleYear] = useState(new Date().getFullYear() + 1)
+  const [scheduleStatus, setScheduleStatus] = useState(null) // 'loading', 'success', 'error'
+  const [scheduleMessage, setScheduleMessage] = useState('')
+
+
+  const handleLanguageChange = (newLanguage) => {
+    setCurrentLanguage(newLanguage)
+    setLanguage(newLanguage)
+    // Reload to apply language change
+    window.location.reload()
+  }
+
+  const handleMeetingDayChange = (day) => {
+    setMeetingDay(day)
+    localStorage.setItem('settings_meetingDay', day)
+  }
+
+  const handleReadingPlanChange = (plan) => {
+    setReadingPlan(plan)
+    localStorage.setItem('settings_readingPlan', plan)
+  }
+
+  const handleDailyReminderToggle = () => {
+    const newValue = !dailyReminder
+    setDailyReminder(newValue)
+    localStorage.setItem('settings_dailyReminder', newValue.toString())
+  }
+
+  const handleReminderTimeChange = (time) => {
+    setReminderTime(time)
+    localStorage.setItem('settings_reminderTime', time)
+  }
+
+  const handleFetchSchedule = () => {
+    // Show instructions for using the Node.js script instead of browser-based fetch
+    setScheduleStatus('info')
+    setScheduleMessage(`📖 Leseplan & Jahrestext für ${scheduleYear} herunterladen
+
+Um den Leseplan und Jahrestext für ${scheduleYear} zu laden, führe diesen Befehl im Terminal aus:
+
+   node scripts/parse-daily-texts.js ${scheduleYear}
+
+Das Skript wird automatisch:
+✅ Den wöchentlichen Leseplan von JW.org laden
+✅ Den Jahrestext für ${scheduleYear} abrufen
+✅ Alle Dateien im data/ Ordner erstellen
+✅ Die Loader-Dateien automatisch aktualisieren
+
+Danach ist alles fertig - keine manuellen Schritte nötig!
+
+Alternative: Direktlinks
+📅 Leseplan: https://wol.jw.org/en/wol/d/r1/lp-e/110${scheduleYear}214
+📖 Jahrestext: https://wol.jw.org/en/wol/d/r1/lp-e/110${scheduleYear}212`)
+  }
+
+
+  const handleResetAll = () => {
+    if (window.confirm('Alle Einstellungen zurücksetzen? Dies löscht NICHT deine Lesefortschritte.')) {
+      // Reset to defaults
+      localStorage.removeItem('settings_meetingDay')
+      localStorage.removeItem('settings_readingPlan')
+      localStorage.removeItem('settings_dailyReminder')
+      localStorage.removeItem('settings_reminderTime')
+      localStorage.removeItem('app_language')
+
+      // Reload
+      window.location.reload()
+    }
+  }
+
+  const toggleSection = (section) => {
+    setExpandedSection(expandedSection === section ? null : section)
+  }
+
+  const getLanguageName = () => {
+    return SUPPORTED_LANGUAGES.find(l => l.code === language)?.name || 'Deutsch'
+  }
+
+  const getMeetingDayName = () => {
+    return weekDays.find(d => d.value === meetingDay)?.label || 'Montag'
+  }
+
+  const getReadingPlanName = () => {
+    return readingPlans.find(p => p.value === readingPlan)?.label || 'Freies Lesen'
+  }
+
+  const weekDays = [
+    { value: '0', label: 'Sonntag' },
+    { value: '1', label: 'Montag' },
+    { value: '2', label: 'Dienstag' },
+    { value: '3', label: 'Mittwoch' },
+    { value: '4', label: 'Donnerstag' },
+    { value: '5', label: 'Freitag' },
+    { value: '6', label: 'Samstag' }
+  ]
+
+  const readingPlans = [
+    { value: 'free', label: 'Freies Lesen (Bible Tree)' },
+    { value: '1year', label: 'Bibel in 1 Jahr' },
+    { value: '2years', label: 'Bibel in 2 Jahren' },
+    { value: 'chronological', label: 'Chronologisch' },
+    { value: 'bookByBook', label: 'Buch für Buch' }
+  ]
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 p-4">
+      <div className="max-w-2xl mx-auto">
+        {/* Header */}
+        <div className="mb-6 pt-4">
+          <button
+            onClick={() => navigate('/')}
+            className="flex items-center gap-2 text-gray-700 hover:text-gray-900 mb-4"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            Zurück
+          </button>
+
+          <h1 className="text-2xl font-bold text-gray-800 mb-2">
+            Einstellungen
+          </h1>
+          <p className="text-sm text-gray-600">
+            Passe die App an deine Bedürfnisse an
+          </p>
+        </div>
+
+        {/* Language Settings */}
+        <div className="card bg-white border border-gray-200 mb-3">
+          <button
+            onClick={() => toggleSection('language')}
+            className="w-full flex items-center justify-between"
+          >
+            <div className="flex items-center gap-2">
+              <Globe className="w-5 h-5 text-blue-600" />
+              <h2 className="font-semibold text-gray-800">Sprache</h2>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-gray-600">{getLanguageName()}</span>
+              {expandedSection === 'language' ? (
+                <ChevronDown className="w-5 h-5 text-gray-400" />
+              ) : (
+                <ChevronRight className="w-5 h-5 text-gray-400" />
+              )}
+            </div>
+          </button>
+
+          {expandedSection === 'language' && (
+            <div className="mt-4 pt-4 border-t border-gray-200">
+              <div className="grid grid-cols-2 gap-2">
+                {SUPPORTED_LANGUAGES.map((lang) => (
+                  <button
+                    key={lang.code}
+                    onClick={() => handleLanguageChange(lang.code)}
+                    className={`p-3 rounded-lg border-2 transition-all ${
+                      language === lang.code
+                        ? 'border-blue-500 bg-blue-50 text-blue-900'
+                        : 'border-gray-200 hover:border-gray-300 text-gray-700'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className="text-2xl">{lang.flag}</span>
+                      <span className="font-medium">{lang.name}</span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+
+              <p className="text-xs text-gray-500 mt-3">
+                Die App wird neu geladen um die Sprache zu ändern
+              </p>
+            </div>
+          )}
+        </div>
+
+        {/* Weekly Reading Settings */}
+        <div className="card bg-white border border-gray-200 mb-3">
+          <button
+            onClick={() => toggleSection('weekly')}
+            className="w-full flex items-center justify-between"
+          >
+            <div className="flex items-center gap-2">
+              <Calendar className="w-5 h-5 text-blue-600" />
+              <h2 className="font-semibold text-gray-800">Wöchentliches Lesen</h2>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-gray-600">{getMeetingDayName()}</span>
+              {expandedSection === 'weekly' ? (
+                <ChevronDown className="w-5 h-5 text-gray-400" />
+              ) : (
+                <ChevronRight className="w-5 h-5 text-gray-400" />
+              )}
+            </div>
+          </button>
+
+          {expandedSection === 'weekly' && (
+            <div className="mt-4 pt-4 border-t border-gray-200">
+              {/* Meeting Day */}
+              <div>
+                <label className="text-sm font-medium text-gray-700 block mb-2">
+                  Versammlungstag
+                </label>
+                <select
+                  value={meetingDay}
+                  onChange={(e) => handleMeetingDayChange(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  {weekDays.map((day) => (
+                    <option key={day.value} value={day.value}>
+                      {day.label}
+                    </option>
+                  ))}
+                </select>
+                <p className="text-xs text-gray-500 mt-1">
+                  Die Woche läuft von einem Versammlungstag zum nächsten
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Personal Reading Plan */}
+        <div className="card bg-white border border-gray-200 mb-3">
+          <button
+            onClick={() => toggleSection('personal')}
+            className="w-full flex items-center justify-between"
+          >
+            <div className="flex items-center gap-2">
+              <BookOpen className="w-5 h-5 text-blue-600" />
+              <h2 className="font-semibold text-gray-800">Persönliches Bibellesen</h2>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-gray-600">{getReadingPlanName()}</span>
+              {expandedSection === 'personal' ? (
+                <ChevronDown className="w-5 h-5 text-gray-400" />
+              ) : (
+                <ChevronRight className="w-5 h-5 text-gray-400" />
+              )}
+            </div>
+          </button>
+
+          {expandedSection === 'personal' && (
+            <div className="mt-4 pt-4 border-t border-gray-200">
+              <div>
+                <label className="text-sm font-medium text-gray-700 block mb-2">
+                  Leseplan
+                </label>
+                <select
+                  value={readingPlan}
+                  onChange={(e) => handleReadingPlanChange(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  {readingPlans.map((plan) => (
+                    <option key={plan.value} value={plan.value}>
+                      {plan.label}
+                    </option>
+                  ))}
+                </select>
+                <p className="text-xs text-gray-500 mt-1">
+                  Wähle wie du die Bibel lesen möchtest
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Notifications */}
+        <div className="card bg-white border border-gray-200 mb-3">
+          <button
+            onClick={() => toggleSection('notifications')}
+            className="w-full flex items-center justify-between"
+          >
+            <div className="flex items-center gap-2">
+              <Bell className="w-5 h-5 text-blue-600" />
+              <h2 className="font-semibold text-gray-800">Erinnerungen</h2>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-gray-600">
+                {dailyReminder ? `An (${reminderTime})` : 'Aus'}
+              </span>
+              {expandedSection === 'notifications' ? (
+                <ChevronDown className="w-5 h-5 text-gray-400" />
+              ) : (
+                <ChevronRight className="w-5 h-5 text-gray-400" />
+              )}
+            </div>
+          </button>
+
+          {expandedSection === 'notifications' && (
+            <div className="mt-4 pt-4 border-t border-gray-200">
+              {/* Daily Reminder Toggle */}
+              <div className="flex items-center justify-between mb-3">
+                <div>
+                  <p className="text-sm font-medium text-gray-700">Tägliche Erinnerung</p>
+                  <p className="text-xs text-gray-500">Für Tagestext</p>
+                </div>
+                <button
+                  onClick={handleDailyReminderToggle}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                    dailyReminder ? 'bg-blue-600' : 'bg-gray-300'
+                  }`}
+                >
+                  <span
+                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                      dailyReminder ? 'translate-x-6' : 'translate-x-1'
+                    }`}
+                  />
+                </button>
+              </div>
+
+              {/* Reminder Time */}
+              {dailyReminder && (
+                <div>
+                  <label className="text-sm font-medium text-gray-700 block mb-2">
+                    Uhrzeit
+                  </label>
+                  <input
+                    type="time"
+                    value={reminderTime}
+                    onChange={(e) => handleReminderTimeChange(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              )}
+
+              <p className="text-xs text-gray-500 mt-3">
+                ⚠️ Benachrichtigungen werden in einer späteren Version implementiert
+              </p>
+            </div>
+          )}
+        </div>
+
+        {/* Schedule Update */}
+        <div className="card bg-white border border-gray-200 mb-3">
+          <button
+            onClick={() => toggleSection('schedule')}
+            className="w-full flex items-center justify-between"
+          >
+            <div className="flex items-center gap-2">
+              <Download className="w-5 h-5 text-blue-600" />
+              <h2 className="font-semibold text-gray-800">Leseplan aktualisieren</h2>
+            </div>
+            {expandedSection === 'schedule' ? (
+              <ChevronDown className="w-5 h-5 text-gray-400" />
+            ) : (
+              <ChevronRight className="w-5 h-5 text-gray-400" />
+            )}
+          </button>
+
+          {expandedSection === 'schedule' && (
+            <div className="mt-4 pt-4 border-t border-gray-200">
+              <p className="text-sm text-gray-600 mb-3">
+                Lade den wöchentlichen Leseplan <strong>und Jahrestext</strong> für ein neues Jahr von JW.org herunter.
+              </p>
+
+              {/* Year Input */}
+              <div className="mb-3">
+                <label className="text-sm font-medium text-gray-700 block mb-2">
+                  Jahr
+                </label>
+                <input
+                  type="number"
+                  value={scheduleYear}
+                  onChange={(e) => setScheduleYear(parseInt(e.target.value))}
+                  min={new Date().getFullYear()}
+                  max={new Date().getFullYear() + 5}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              {/* Fetch Button */}
+              <button
+                onClick={handleFetchSchedule}
+                disabled={scheduleStatus === 'loading'}
+                className={`w-full py-2 px-4 rounded-lg font-medium transition-colors flex items-center justify-center gap-2 ${
+                  scheduleStatus === 'loading'
+                    ? 'bg-gray-300 text-gray-600 cursor-not-allowed'
+                    : 'bg-blue-600 text-white hover:bg-blue-700'
+                }`}
+              >
+                {scheduleStatus === 'loading' ? (
+                  <>
+                    <RefreshCw className="w-4 h-4 animate-spin" />
+                    Lädt...
+                  </>
+                ) : (
+                  <>
+                    <Download className="w-4 h-4" />
+                    Leseplan herunterladen
+                  </>
+                )}
+              </button>
+
+              {/* Status Message */}
+              {scheduleMessage && (
+                <div
+                  className={`mt-3 p-3 rounded-lg text-sm ${
+                    scheduleStatus === 'success'
+                      ? 'bg-green-50 text-green-800 border border-green-200'
+                      : scheduleStatus === 'error'
+                      ? 'bg-red-50 text-red-800 border border-red-200'
+                      : 'bg-blue-50 text-blue-800 border border-blue-200'
+                  }`}
+                >
+                  {scheduleMessage}
+                </div>
+              )}
+
+              <div className="text-xs text-gray-500 mt-3 space-y-1">
+                {scheduleStatus === 'error' ? (
+                  <div className="bg-yellow-50 border border-yellow-200 p-3 rounded">
+                    <p className="font-semibold text-yellow-900 mb-2">⚠️ Alternative: Manuelle Erstellung</p>
+                    <p className="mb-2">Falls der automatische Download nicht funktioniert:</p>
+                    <ol className="list-decimal list-inside ml-2 space-y-1 text-yellow-900">
+                      <li>Öffne Terminal im Projektordner</li>
+                      <li>Führe aus: <code className="bg-yellow-100 px-1 rounded">node scripts/parse-daily-texts.js</code></li>
+                      <li>Oder besuche direkt:
+                        <br/>
+                        <a
+                          href={`https://wol.jw.org/en/wol/d/r1/lp-e/110${scheduleYear}214`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:underline text-xs break-all"
+                        >
+                          Leseplan {scheduleYear}
+                        </a>
+                        <br/>
+                        <a
+                          href={`https://wol.jw.org/en/wol/d/r1/lp-e/110${scheduleYear}212`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:underline text-xs break-all"
+                        >
+                          Jahrestext {scheduleYear}
+                        </a>
+                      </li>
+                    </ol>
+                  </div>
+                ) : (
+                  <>
+                    <p>💡 <strong>Nach dem Download:</strong></p>
+                    <ol className="list-decimal list-inside ml-2 space-y-1">
+                      <li>Entpacke die heruntergeladene ZIP-Datei</li>
+                      <li>Kopiere <strong>alle Dateien</strong> in den <code>data/</code> Ordner</li>
+                      <li>Fertig! Leseplan und Jahrestext sind automatisch integriert.</li>
+                    </ol>
+                    <p className="mt-2 bg-blue-50 border border-blue-200 p-2 rounded">
+                      📦 <strong>Enthalten:</strong> Wöchentlicher Leseplan + Jahrestext (Themavers)<br/>
+                      ✨ <strong>Vollautomatisch:</strong> Die 3 Code-Zeilen werden automatisch hinzugefügt!
+                    </p>
+                    <p className="mt-2">📖 Details: <code>data/WEEKLY_SCHEDULE_README.md</code></p>
+                  </>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Reset All */}
+        <div className="card bg-white border border-red-200 mb-4">
+          <button
+            onClick={() => toggleSection('reset')}
+            className="w-full flex items-center justify-between"
+          >
+            <div className="flex items-center gap-2">
+              <RotateCcw className="w-5 h-5 text-red-600" />
+              <h2 className="font-semibold text-gray-800">Zurücksetzen</h2>
+            </div>
+            {expandedSection === 'reset' ? (
+              <ChevronDown className="w-5 h-5 text-gray-400" />
+            ) : (
+              <ChevronRight className="w-5 h-5 text-gray-400" />
+            )}
+          </button>
+
+          {expandedSection === 'reset' && (
+            <div className="mt-4 pt-4 border-t border-red-200">
+              <p className="text-sm text-gray-600 mb-3">
+                Setze alle Einstellungen auf Standardwerte zurück. Deine Lesefortschritte bleiben erhalten.
+              </p>
+
+              <button
+                onClick={handleResetAll}
+                className="w-full bg-red-50 text-red-700 py-2 px-4 rounded-lg font-medium hover:bg-red-100 transition-colors border border-red-200"
+              >
+                Alle Einstellungen zurücksetzen
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Version Info */}
+        <div className="text-center text-xs text-gray-500 mt-6 pb-4">
+          <p>Bible Reading Companion v1.0.0</p>
+          <p className="mt-1">Made with ❤️ for Bible readers</p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default SettingsPage
