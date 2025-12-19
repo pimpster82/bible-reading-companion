@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { BookOpen, Lightbulb, ExternalLink, Settings } from 'lucide-react'
+import { Calendar, BookOpen, Lightbulb, ExternalLink, Settings, X } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import DailyTextCard from '../components/DailyTextCard'
 import WeeklyReadingCard from '../components/WeeklyReadingCard'
@@ -24,22 +24,61 @@ const getYeartext = (year) => {
 
 function HomePage() {
   const navigate = useNavigate()
+  const [showDatePicker, setShowDatePicker] = useState(false)
+  const [testDate, setTestDate] = useState(null)
   const [yeartext, setYeartext] = useState(null)
+
+  // Load test date from localStorage
+  useEffect(() => {
+    const savedTestDate = localStorage.getItem('testDate')
+    if (savedTestDate) {
+      setTestDate(savedTestDate)
+    }
+  }, [])
 
   // Load yeartext for current year
   useEffect(() => {
-    const currentYear = new Date().getFullYear()
+    const currentYear = getCurrentDate().getFullYear()
     const loadedYeartext = getYeartext(currentYear)
     setYeartext(loadedYeartext)
-  }, [])
+  }, [testDate])
+
+  // Get today's date or test date
+  const getCurrentDate = () => {
+    if (testDate) {
+      return new Date(testDate)
+    }
+    return new Date()
+  }
 
   // Get today's date in German format
   const getFormattedDate = () => {
-    const date = new Date()
+    const date = getCurrentDate()
     const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }
     const formatted = date.toLocaleDateString('de-DE', options)
     // Capitalize first letter
     return formatted.charAt(0).toUpperCase() + formatted.slice(1)
+  }
+
+  const handleDateChange = (newDate) => {
+    setTestDate(newDate)
+    localStorage.setItem('testDate', newDate)
+    // Reload to update all components
+    window.location.reload()
+  }
+
+  const handleResetDate = () => {
+    setTestDate(null)
+    localStorage.removeItem('testDate')
+    setShowDatePicker(false)
+    // Reload to update all components
+    window.location.reload()
+  }
+
+  // Format date for input (YYYY-MM-DD)
+  const getInputDate = () => {
+    const date = getCurrentDate()
+    return date.toISOString().split('T')[0]
   }
 
   return (
@@ -68,6 +107,13 @@ function HomePage() {
         <div className="mb-4 pt-2">
           <div className="flex items-center justify-between">
             <h1 className="text-xl font-bold text-gray-800 flex items-center gap-2">
+              <button
+                onClick={() => setShowDatePicker(!showDatePicker)}
+                className="p-1 hover:bg-white rounded transition-colors"
+                title="Datum ändern (Test)"
+              >
+                <Calendar className={`w-5 h-5 ${testDate ? 'text-orange-600' : ''}`} />
+              </button>
               HEUTE - {getFormattedDate()}
             </h1>
             <button
@@ -78,6 +124,41 @@ function HomePage() {
               <Settings className="w-5 h-5" />
             </button>
           </div>
+
+          {/* Date Picker Dropdown */}
+          {showDatePicker && (
+            <div className="mt-3 p-4 bg-white rounded-lg border border-gray-300 shadow-lg">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-semibold text-gray-800">Test-Datum wählen</h3>
+                <button
+                  onClick={() => setShowDatePicker(false)}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              <input
+                type="date"
+                value={getInputDate()}
+                onChange={(e) => handleDateChange(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mb-3"
+              />
+
+              {testDate && (
+                <button
+                  onClick={handleResetDate}
+                  className="w-full bg-gray-100 text-gray-700 py-2 px-4 rounded-lg font-medium hover:bg-gray-200 transition-colors text-sm"
+                >
+                  Auf heute zurücksetzen
+                </button>
+              )}
+
+              <p className="text-xs text-gray-500 mt-2">
+                ⚠️ Test-Modus: Das Datum wird für alle Komponenten überschrieben
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Main Content - Card Layout */}
