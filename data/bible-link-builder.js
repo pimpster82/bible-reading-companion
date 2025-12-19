@@ -6,6 +6,18 @@
 import bibleBooks from './bible-books-en.json';
 
 /**
+ * Map of language codes to JW.org locale paths
+ * Format: { languageCode: { locale: 'wtlocale code', path: 'url path' } }
+ */
+const LANGUAGE_LOCALES = {
+  de: { locale: 'de', path: '/de/bibliothek/bibel/studienbibel/buecher' },
+  en: { locale: 'E', path: '/en/library/bible/study-bible/books' },
+  es: { locale: 'es', path: '/es/biblioteca/biblia/biblia-estudio/libros' },
+  it: { locale: 'it', path: '/it/biblioteca-digitale/bibbia/bibbia-per-lo-studio/libri' },
+  fr: { locale: 'fr', path: '/fr/bibliothèque/bible/bible-d-etude/livres' },
+};
+
+/**
  * Build a JW.org finder link for a Bible reading
  * @param {number} bookNumber - Bible book number (1-66)
  * @param {number} startChapter - Starting chapter
@@ -92,6 +104,45 @@ export function getBookInfo(identifier) {
 }
 
 /**
+ * Build a language-specific JW.org web link
+ * @param {number} bookNumber - Bible book number (1-66)
+ * @param {number} chapter - Chapter number
+ * @param {number} startVerse - Starting verse (optional, defaults to 1)
+ * @param {number} endVerse - Ending verse (optional, defaults to end of chapter)
+ * @param {string} languageCode - Language code (de, en, es, it, fr) - defaults to current language or 'en'
+ * @returns {string} - JW.org web link for the specified language
+ */
+export function buildLanguageSpecificWebLink(bookNumber, chapter, startVerse = 1, endVerse = null, languageCode = null) {
+  // Get current language from localStorage if not specified
+  if (!languageCode) {
+    languageCode = localStorage.getItem('app_language') || 'en';
+  }
+
+  // Get locale info, default to English if language not found
+  const localeInfo = LANGUAGE_LOCALES[languageCode] || LANGUAGE_LOCALES['en'];
+
+  // Get book name from English data (we'll need to match this to language-specific names)
+  const book = bibleBooks.books.find(b => b.number === bookNumber);
+  if (!book) {
+    console.error(`Book number ${bookNumber} not found`);
+    return null;
+  }
+
+  // Format verse range
+  const startVerseStr = String(startVerse).padStart(3, '0');
+  const endVerseStr = endVerse ? String(endVerse).padStart(3, '0') : '999'; // 999 auto-adjusts to end of chapter
+  const bibleCode = `v${String(bookNumber).padStart(2, '0')}${String(chapter).padStart(3, '0')}`;
+
+  // Build the URL with the correct language path
+  // Example: https://www.jw.org/de/bibliothek/bibel/studienbibel/buecher/jesaja/9/#v23009001-v23009021
+  const baseUrl = `https://www.jw.org${localeInfo.path}`;
+  const bookSlug = book.name.toLowerCase().replace(/\s+/g, '-');
+  const url = `${baseUrl}/${bookSlug}/${chapter}/#${bibleCode}${startVerseStr}-${bibleCode}${endVerseStr}`;
+
+  return url;
+}
+
+/**
  * Parse a reading string like "Genesis 1-3" or "Rev 21-22"
  * @param {string} readingString - Reading in format "BookName Chapter-Chapter"
  * @param {string} locale - Language code
@@ -100,16 +151,16 @@ export function getBookInfo(identifier) {
 export function parseReadingString(readingString, locale = 'E') {
   // Match patterns like "Genesis 1-3", "Rev 21-22", "Psalms 1"
   const match = readingString.match(/^(.+?)\s+(\d+)(?:-(\d+))?$/);
-  
+
   if (!match) {
     console.error(`Invalid reading format: "${readingString}"`);
     return null;
   }
-  
+
   const [, bookName, startChapter, endChapter] = match;
   return buildBibleLinkByName(
-    bookName.trim(), 
-    parseInt(startChapter), 
+    bookName.trim(),
+    parseInt(startChapter),
     endChapter ? parseInt(endChapter) : null,
     locale
   );

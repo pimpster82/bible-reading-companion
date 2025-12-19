@@ -3,7 +3,7 @@ import { ArrowLeft, ExternalLink, Check, Circle, Edit3, RotateCcw, Trash2 } from
 import { useNavigate } from 'react-router-dom'
 import { getCurrentWeekReading, formatWeekRange } from '../../data/weekly-reading-schedule'
 import { parseReadingInput, formatChapterStatus, getNextReading } from '../utils/readingParser'
-import { buildJWLibraryDeepLink } from '../../data/bible-link-builder'
+import { buildLanguageSpecificWebLink } from '../../data/bible-link-builder'
 import { t } from '../config/i18n'
 
 const WeeklyReadingPage = () => {
@@ -197,21 +197,18 @@ const WeeklyReadingPage = () => {
       startVerse = chapterData.verses + 1
     }
 
-    // Build finder URL for JW Library app
-    // Format: BBCCCVVV where BB=book, CCC=chapter, VVV=verse (001=start at verse 1)
-    const startVerseStr = String(startVerse).padStart(3, '0')
-    const bibleCode = `${String(bookNumber).padStart(2, '0')}${String(chapter).padStart(3, '0')}${startVerseStr}`
-    const finderUrl = `https://www.jw.org/finder?pub=nwtsty&bible=${bibleCode}&wtlocale=E&srcid=share`
+    // Build language-specific JW.org web link
+    // The function automatically detects the current language from localStorage
+    const webUrl = buildLanguageSpecificWebLink(bookNumber, chapter, startVerse)
 
     // Debug: Log the generated URL
-    console.log('Generated JW Library Deep Link:', finderUrl)
-    console.log('Bible Code:', bibleCode)
-    console.log('Chapter Data:', chapterData)
+    console.log('Generated Language-Specific JW.org Web Link:', webUrl)
+    console.log('Chapter:', chapter)
     console.log('Start Verse:', startVerse)
+    console.log('Chapter Data:', chapterData)
 
-    // Open the finder URL - if JW Library app is installed, it will intercept this
-    // Otherwise it opens in browser
-    window.open(finderUrl, '_blank', 'noopener,noreferrer')
+    // Open the web link - respects user's language setting
+    window.open(webUrl, '_blank', 'noopener,noreferrer')
   }
 
 
