@@ -509,7 +509,7 @@ Diese Funktion wird in einer zukünftigen Version implementiert. Der Leseplan wi
 
         {/* Version Info */}
         <div className="text-center text-xs text-gray-500 mt-6 pb-4">
-          <p>Bible Reading Companion v1.0.0</p>
+          <p>Bible Reading Companion v0.0.1</p>
           <p className="mt-1">Made with ❤️ for Bible readers</p>
         </div>
       </div>
