@@ -103,6 +103,29 @@ Alternative: Direktlinks
     }
   }
 
+  const handleResetProgress = () => {
+    if (window.confirm('Möchtest du wirklich ALLE Lesefortschritte zurücksetzen? Dies kann nicht rückgängig gemacht werden!')) {
+      // Reset all reading progress data
+      localStorage.removeItem('bibleCompanion_dailyText') // Daily text streak
+      localStorage.removeItem('weeklyReading_current') // Current week progress
+      localStorage.removeItem('personalReading_progress') // Personal reading progress
+
+      // Clear any chapter/verse data
+      const keysToRemove = []
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i)
+        if (key && (key.includes('chapter') || key.includes('verse') || key.includes('reading'))) {
+          keysToRemove.push(key)
+        }
+      }
+      keysToRemove.forEach(key => localStorage.removeItem(key))
+
+      // Success message and reload
+      alert('✅ Lesefortschritt erfolgreich zurückgesetzt!')
+      window.location.reload()
+    }
+  }
+
   const toggleSection = (section) => {
     setExpandedSection(expandedSection === section ? null : section)
   }
@@ -507,17 +530,34 @@ Alternative: Direktlinks
           </button>
 
           {expandedSection === 'reset' && (
-            <div className="mt-4 pt-4 border-t border-red-200">
-              <p className="text-sm text-gray-600 mb-3">
-                Setze alle Einstellungen auf Standardwerte zurück. Deine Lesefortschritte bleiben erhalten.
-              </p>
+            <div className="mt-4 pt-4 border-t border-red-200 space-y-3">
+              {/* Reset Settings */}
+              <div>
+                <p className="text-sm font-medium text-gray-700 mb-2">Einstellungen zurücksetzen</p>
+                <p className="text-xs text-gray-600 mb-2">
+                  Setze alle Einstellungen auf Standardwerte zurück. Deine Lesefortschritte bleiben erhalten.
+                </p>
+                <button
+                  onClick={handleResetAll}
+                  className="w-full bg-red-50 text-red-700 py-2 px-4 rounded-lg font-medium hover:bg-red-100 transition-colors border border-red-200"
+                >
+                  Alle Einstellungen zurücksetzen
+                </button>
+              </div>
 
-              <button
-                onClick={handleResetAll}
-                className="w-full bg-red-50 text-red-700 py-2 px-4 rounded-lg font-medium hover:bg-red-100 transition-colors border border-red-200"
-              >
-                Alle Einstellungen zurücksetzen
-              </button>
+              {/* Reset Progress */}
+              <div className="pt-3 border-t border-red-200">
+                <p className="text-sm font-medium text-gray-700 mb-2">Lesefortschritt zurücksetzen</p>
+                <p className="text-xs text-gray-600 mb-2">
+                  ⚠️ Löscht alle Lesefortschritte (Wöchentliches Lesen, Tagestext, Persönliches Lesen). Deine Einstellungen bleiben erhalten.
+                </p>
+                <button
+                  onClick={handleResetProgress}
+                  className="w-full bg-red-100 text-red-800 py-2 px-4 rounded-lg font-medium hover:bg-red-200 transition-colors border border-red-300"
+                >
+                  Lesefortschritt löschen
+                </button>
+              </div>
             </div>
           )}
         </div>

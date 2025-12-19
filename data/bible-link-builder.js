@@ -3,7 +3,7 @@
  * Generates links that open JW Library app if available, otherwise jw.org website
  */
 
-import bibleBooks from './bible-books-database.json';
+import bibleBooks from './bible-books-en.json';
 
 /**
  * Build a JW.org finder link for a Bible reading
@@ -11,9 +11,10 @@ import bibleBooks from './bible-books-database.json';
  * @param {number} startChapter - Starting chapter
  * @param {number} endChapter - Ending chapter (optional, defaults to startChapter)
  * @param {string} locale - Language code (default: 'E' for English)
- * @returns {string} - JW.org finder URL
+ * @param {number} startVerse - Starting verse (optional, defaults to 1)
+ * @returns {string} - JW.org finder URL with deep link fallback for JW Library app
  */
-export function buildBibleLink(bookNumber, startChapter, endChapter = null, locale = 'E') {
+export function buildBibleLink(bookNumber, startChapter, endChapter = null, locale = 'E', startVerse = 1) {
   // If no end chapter specified, use start chapter
   if (endChapter === null) {
     endChapter = startChapter;
@@ -23,12 +24,33 @@ export function buildBibleLink(bookNumber, startChapter, endChapter = null, loca
   const bookStr = bookNumber.toString().padStart(2, '0');
   const startChapterStr = startChapter.toString().padStart(3, '0');
   const endChapterStr = endChapter.toString().padStart(3, '0');
-  
-  // Use 001 for start verse, 999 for end verse (auto-adjusts to last verse)
-  const start = `${bookStr}${startChapterStr}001`;
+  const startVerseStr = startVerse.toString().padStart(3, '0');
+
+  // Use specified start verse, 999 for end verse (auto-adjusts to last verse)
+  const start = `${bookStr}${startChapterStr}${startVerseStr}`;
   const end = `${bookStr}${endChapterStr}999`;
-  
-  return `https://www.jw.org/finder?srcid=jwlshare&wtlocale=${locale}&prefer=lang&bible=${start}-${end}&pub=nwtsty`;
+
+  // Primary link for JW Library app deep linking
+  const finderLink = `https://www.jw.org/finder?srcid=jwlshare&wtlocale=${locale}&prefer=lang&bible=${start}-${end}&pub=nwtsty`;
+
+  // Return finder link (browser will use it, and JW Library app will intercept if available)
+  return finderLink;
+}
+
+/**
+ * Build a JW Library deep link (jwlibrary://) for direct app opening
+ * @param {number} bookNumber - Bible book number (1-66)
+ * @param {number} chapter - Chapter number
+ * @param {number} verse - Starting verse (optional, defaults to 1)
+ * @returns {string} - JW Library deep link
+ */
+export function buildJWLibraryDeepLink(bookNumber, chapter, verse = 1) {
+  const bookStr = bookNumber.toString().padStart(2, '0');
+  const chapterStr = chapter.toString().padStart(3, '0');
+  const verseStr = verse.toString().padStart(3, '0');
+
+  const reference = `${bookStr}${chapterStr}${verseStr}`;
+  return `jwlibrary://bible/${reference}`;
 }
 
 /**
@@ -91,32 +113,4 @@ export function parseReadingString(readingString, locale = 'E') {
     endChapter ? parseInt(endChapter) : null,
     locale
   );
-}
-
-// Example usage and tests
-if (import.meta.url === `file://${process.argv[1]}`) {
-  console.log('=== Bible Link Builder Examples ===\n');
-  
-  console.log('Revelation 21-22:');
-  console.log(buildBibleLink(66, 21, 22));
-  console.log();
-  
-  console.log('Isaiah 1-2:');
-  console.log(buildBibleLink(23, 1, 2));
-  console.log();
-  
-  console.log('By name - Genesis 1-3:');
-  console.log(buildBibleLinkByName('Genesis', 1, 3));
-  console.log();
-  
-  console.log('By abbreviation - Ps 23:');
-  console.log(buildBibleLinkByName('Ps', 23));
-  console.log();
-  
-  console.log('Parsing string "Rev 21-22":');
-  console.log(parseReadingString('Rev 21-22'));
-  console.log();
-  
-  console.log('Parsing string "Proverbs 20":');
-  console.log(parseReadingString('Proverbs 20'));
 }

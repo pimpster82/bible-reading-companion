@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import { ArrowLeft, ExternalLink, Check, Circle, Edit3 } from 'lucide-react'
+import { ArrowLeft, ExternalLink, Check, Circle, Edit3, RotateCcw, Trash2 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { getCurrentWeekReading, formatWeekRange } from '../../data/weekly-reading-schedule'
 import { parseReadingInput, formatChapterStatus, getNextReading } from '../utils/readingParser'
+import { buildJWLibraryDeepLink } from '../../data/bible-link-builder'
 
 const WeeklyReadingPage = () => {
   const navigate = useNavigate()
@@ -12,6 +13,8 @@ const WeeklyReadingPage = () => {
   const [inputError, setInputError] = useState(null)
   const [suggestion, setSuggestion] = useState(null)
   const [showInput, setShowInput] = useState(false)
+  const [showClearConfirm, setShowClearConfirm] = useState(false)
+  const [lastAction, setLastAction] = useState(null) // Track last action for undo
 
   useEffect(() => {
     // Get test date from localStorage if set
@@ -62,6 +65,23 @@ const WeeklyReadingPage = () => {
       return
     }
 
+    // Check if parsed book matches expected book
+    if (result.book && result.book.name !== weekReading.book) {
+      setInputError(`Erwartet: ${weekReading.book}, aber ${result.book.name} eingegeben`)
+      setSuggestion(null)
+      return
+    }
+
+    // Check if chapters are in the expected reading range
+    const invalidChapters = result.chapters.filter(c => !weekReading.chapters.includes(c.chapter))
+    if (invalidChapters.length > 0) {
+      const invalidList = invalidChapters.map(c => c.chapter).join(', ')
+      const expectedList = weekReading.chapters.join(', ')
+      setInputError(`Kapitel ${invalidList} nicht in dieser Woche erwartet. Erwartet: Kapitel ${expectedList}`)
+      setSuggestion(null)
+      return
+    }
+
     // Merge with existing data
     const updatedChapters = [...chaptersRead]
 
@@ -76,6 +96,8 @@ const WeeklyReadingPage = () => {
       updatedChapters.push(...filtered)
     }
 
+    // Save current state before updating
+    setLastAction({ type: 'add', previousState: [...chaptersRead] })
     setChaptersRead(updatedChapters)
 
     if (weekReading) {
@@ -90,6 +112,34 @@ const WeeklyReadingPage = () => {
     setInputError(null)
     setSuggestion(null)
     setShowInput(false)
+  }
+
+  const handleUndo = () => {
+    if (!lastAction || !lastAction.previousState) return
+
+    setChaptersRead(lastAction.previousState)
+    setLastAction(null)
+
+    if (weekReading) {
+      localStorage.setItem('weeklyReading_current', JSON.stringify({
+        weekStart: weekReading.weekStart,
+        chaptersRead: lastAction.previousState
+      }))
+    }
+  }
+
+  const handleClearAll = () => {
+    // Save current state before clearing
+    setLastAction({ type: 'clear', previousState: [...chaptersRead] })
+    setChaptersRead([])
+    setShowClearConfirm(false)
+
+    if (weekReading) {
+      localStorage.setItem('weeklyReading_current', JSON.stringify({
+        weekStart: weekReading.weekStart,
+        chaptersRead: []
+      }))
+    }
   }
 
   const handleAcceptSuggestion = (suggestedBook) => {
@@ -135,11 +185,32 @@ const WeeklyReadingPage = () => {
   const openChapter = (chapter) => {
     // Isaiah = Book 23
     const bookNumber = 23
-    const startCode = `${String(bookNumber).padStart(2, '0')}${String(chapter).padStart(3, '0')}001`
-    const endCode = `${String(bookNumber).padStart(2, '0')}${String(chapter).padStart(3, '0')}999`
-    const url = `https://www.jw.org/finder?srcid=jwlshare&wtlocale=E&prefer=lang&bible=${startCode}-${endCode}&pub=nwtsty`
 
-    window.open(url, '_blank', 'noopener,noreferrer')
+    // Check if chapter has been started (has any verses read)
+    const chapterData = getChapterData(chapter)
+    let startVerse = 1 // Default to verse 1
+
+    // If chapter is partial (has verses read), start from the next verse
+    if (chapterData && chapterData.status === 'partial' && chapterData.verses) {
+      // verses is a number representing the highest verse read
+      startVerse = chapterData.verses + 1
+    }
+
+    // Build finder URL for JW Library app
+    // Format: BBCCCVVV where BB=book, CCC=chapter, VVV=verse (001=start at verse 1)
+    const startVerseStr = String(startVerse).padStart(3, '0')
+    const bibleCode = `${String(bookNumber).padStart(2, '0')}${String(chapter).padStart(3, '0')}${startVerseStr}`
+    const finderUrl = `https://www.jw.org/finder?pub=nwtsty&bible=${bibleCode}&wtlocale=E&srcid=share`
+
+    // Debug: Log the generated URL
+    console.log('Generated JW Library Deep Link:', finderUrl)
+    console.log('Bible Code:', bibleCode)
+    console.log('Chapter Data:', chapterData)
+    console.log('Start Verse:', startVerse)
+
+    // Open the finder URL - if JW Library app is installed, it will intercept this
+    // Otherwise it opens in browser
+    window.open(finderUrl, '_blank', 'noopener,noreferrer')
   }
 
 
@@ -163,7 +234,8 @@ const WeeklyReadingPage = () => {
   }
 
   const totalChapters = weekReading.chapters.length
-  const readCount = chaptersRead.length
+  // Only count chapters that are in the expected week's reading
+  const readCount = chaptersRead.filter(c => weekReading.chapters.includes(c.chapter)).length
   const progressPercent = totalChapters > 0 ? (readCount / totalChapters) * 100 : 0
 
   return (
@@ -230,7 +302,7 @@ const WeeklyReadingPage = () => {
                     setReadingInput(e.target.value)
                     setInputError(null)
                   }}
-                  placeholder="z.B. 3-4:15"
+                  placeholder="Was hast du gelesen? (z.B. 9 oder 9-10)"
                   className="w-full px-3 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
                 {inputError && (
@@ -335,17 +407,9 @@ const WeeklyReadingPage = () => {
                   </div>
                 )}
 
-                <div className="mt-2 text-xs text-gray-600">
-                  <p className="font-medium mb-1">Beispiele:</p>
-                  <p>• <code className="bg-gray-100 px-1 rounded">3</code> → Kapitel 3 komplett</p>
-                  <p>• <code className="bg-gray-100 px-1 rounded">3-5</code> → Kapitel 3 bis 5</p>
-                  <p>• <code className="bg-gray-100 px-1 rounded">3-4:15</code> → Kap 3 komplett, 4 bis Vers 15</p>
-                  <p>• <code className="bg-gray-100 px-1 rounded">3:1,2</code> → Kap 3 Verse 1 und 2</p>
-                  <p>• <code className="bg-gray-100 px-1 rounded">3:1,2; 4:15</code> → Kap 3 V. 1-2 und Kap 4 V. 15</p>
-                  <p className="mt-1 text-gray-500">
-                    <strong>Trenner:</strong> <code>,</code> = und · <code>;</code> = weiterer Text · <code>-</code> = bis
-                  </p>
-                </div>
+                <p className="text-xs text-gray-500 mt-2">
+                  Beispiele: <code className="bg-gray-100 px-1">9</code> · <code className="bg-gray-100 px-1">9-10</code> · <code className="bg-gray-100 px-1">9:5-10</code>
+                </p>
               </div>
 
               <button
@@ -360,7 +424,54 @@ const WeeklyReadingPage = () => {
 
         {/* Chapter List */}
         <div className="space-y-2">
-          <h3 className="text-sm font-semibold text-gray-700 mb-3">Kapitel einzeln:</h3>
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-sm font-semibold text-gray-700">Kapitel einzeln:</h3>
+            <div className="flex gap-2">
+              {lastAction && (
+                <button
+                  onClick={handleUndo}
+                  title="Letzte Aktion rückgängig machen"
+                  className="text-xs text-blue-600 hover:text-blue-800 hover:underline flex items-center gap-1"
+                >
+                  <RotateCcw className="w-3 h-3" />
+                  Rückgängig
+                </button>
+              )}
+              {readCount > 0 && (
+                <button
+                  onClick={() => setShowClearConfirm(true)}
+                  title="Alle Einträge löschen"
+                  className="text-xs text-red-600 hover:text-red-800 hover:underline flex items-center gap-1"
+                >
+                  <Trash2 className="w-3 h-3" />
+                  Alles löschen
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Clear Confirmation Modal */}
+          {showClearConfirm && (
+            <div className="mb-3 p-3 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-sm text-red-900 mb-2">
+                Möchtest du wirklich alle Einträge löschen?
+              </p>
+              <div className="flex gap-2">
+                <button
+                  onClick={handleClearAll}
+                  className="text-xs bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+                >
+                  Ja, löschen
+                </button>
+                <button
+                  onClick={() => setShowClearConfirm(false)}
+                  className="text-xs bg-gray-300 text-gray-800 px-3 py-1 rounded hover:bg-gray-400"
+                >
+                  Abbrechen
+                </button>
+              </div>
+            </div>
+          )}
 
           {weekReading.chapters.map((chapter) => {
             const chapterData = getChapterData(chapter)
