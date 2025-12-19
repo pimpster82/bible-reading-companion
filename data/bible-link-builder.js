@@ -218,6 +218,116 @@ export function buildLanguageSpecificWebLink(bookNumber, chapter, startVerse = 1
 }
 
 /**
+ * Map English book names to book numbers
+ */
+const ENGLISH_BOOK_NAMES_TO_NUMBER = {
+  'genesis': 1, '1-mose': 1, 'mose': 1,
+  'exodus': 2,
+  'leviticus': 3,
+  'numbers': 4,
+  'deuteronomy': 5,
+  'joshua': 6, 'josua': 6,
+  'judges': 7, 'richter': 7,
+  'ruth': 8,
+  '1-samuel': 9, '1 samuel': 9, 'samuel': 9,
+  '2-samuel': 10,
+  '1-kings': 11, '1 kings': 11, 'korinther': 11,
+  '2-kings': 12,
+  '1-chronicles': 13, '1 chronicles': 13, 'chronik': 13,
+  '2-chronicles': 14,
+  'ezra': 15, 'esra': 15,
+  'nehemiah': 16, 'nehemia': 16,
+  'job': 17, 'hiob': 17,
+  'psalms': 18, 'psalm': 18,
+  'proverbs': 19, 'sprueche': 19,
+  'ecclesiastes': 20, 'prediger': 20,
+  'song-of-solomon': 21, 'song of solomon': 21, 'hohelied': 21,
+  'isaiah': 22, 'jesaja': 22,
+  'jeremiah': 24, 'jeremia': 24,
+  'lamentations': 25, 'klagelieder': 25,
+  'ezekiel': 26, 'ezechiel': 26,
+  'daniel': 27,
+  'hosea': 28,
+  'joel': 29,
+  'amos': 30,
+  'obadiah': 31, 'obadja': 31,
+  'jonah': 32, 'jona': 32,
+  'micah': 33, 'micha': 33,
+  'nahum': 34,
+  'habakkuk': 35, 'habakuk': 35,
+  'zephaniah': 36, 'zefanja': 36,
+  'haggai': 37,
+  'zechariah': 38, 'sacharja': 38,
+  'malachi': 39, 'maleachi': 39,
+  'matthew': 40, 'matthaeus': 40,
+  'mark': 41, 'markus': 41,
+  'luke': 42, 'lukas': 42,
+  'john': 43, 'johannes': 43,
+  'acts': 44, 'apostelgeschichte': 44,
+  'romans': 45, 'romer': 45,
+  '1-corinthians': 46, '1 corinthians': 46, '1-korinther': 46,
+  '2-corinthians': 47, '2 corinthians': 47, '2-korinther': 47,
+  'galatians': 48, 'galater': 48,
+  'ephesians': 49, 'epheser': 49,
+  'philippians': 50, 'philipper': 50,
+  'colossians': 51, 'kolosser': 51,
+  '1-thessalonians': 52, '1 thessalonians': 52, '1-thessalonicher': 52,
+  '2-thessalonians': 53, '2 thessalonians': 53, '2-thessalonicher': 53,
+  '1-timothy': 54, '1 timothy': 54, '1-timotheus': 54,
+  '2-timothy': 55, '2 timothy': 55, '2-timotheus': 55,
+  'titus': 56,
+  'philemon': 57,
+  'hebrews': 58, 'hebraer': 58,
+  'james': 59, 'jakobus': 59,
+  '1-peter': 60, '1 peter': 60, '1-petrus': 60,
+  '2-peter': 61, '2 peter': 61, '2-petrus': 61,
+  '1-john': 62, '1 john': 62, '1-johannes': 62,
+  '2-john': 63, '2 john': 63, '2-johannes': 63,
+  '3-john': 64, '3 john': 64, '3-johannes': 64,
+  'jude': 65, 'judas': 65,
+  'revelation': 66, 'offenbarung': 66,
+};
+
+/**
+ * Get book number from English book name
+ * @param {string} bookName - English book name (e.g., "Isaiah", "1 Timothy")
+ * @returns {number|null} - Book number (1-66) or null if not found
+ */
+export function getBookNumberFromName(bookName) {
+  if (!bookName) return null;
+  const normalized = bookName.toLowerCase().trim();
+  return ENGLISH_BOOK_NAMES_TO_NUMBER[normalized] || null;
+}
+
+/**
+ * Get localized book name by book number
+ * @param {number} bookNumber - Bible book number (1-66)
+ * @param {string} languageCode - Language code (de, en, es, it, fr) - defaults to current language or 'en'
+ * @returns {string} - Localized book name with proper capitalization (e.g., "Isaías", "Isaiah", "Jesaja")
+ */
+export function getLocalizedBookName(bookNumber, languageCode = null) {
+  // Get current language from localStorage if not specified
+  if (!languageCode) {
+    languageCode = localStorage.getItem('app_language') || 'en';
+  }
+
+  const bookSlugs = LOCALIZED_BOOK_SLUGS[bookNumber];
+  if (!bookSlugs) {
+    console.error(`Book number ${bookNumber} not found`);
+    return null;
+  }
+
+  // Get slug for the language, fallback to English
+  const slug = bookSlugs[languageCode] || bookSlugs['en'];
+
+  // Capitalize the slug properly (handle cases like "1-samuel", "song-of-solomon")
+  return slug
+    .split('-')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join('-');
+}
+
+/**
  * Parse a reading string like "Genesis 1-3" or "Rev 21-22"
  * @param {string} readingString - Reading in format "BookName Chapter-Chapter"
  * @param {string} locale - Language code

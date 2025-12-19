@@ -3,7 +3,7 @@ import { ArrowLeft, ExternalLink, Check, Circle, Edit3, RotateCcw, Trash2 } from
 import { useNavigate } from 'react-router-dom'
 import { getCurrentWeekReading, formatWeekRange } from '../../data/weekly-reading-schedule'
 import { parseReadingInput, formatChapterStatus, getNextReading } from '../utils/readingParser'
-import { buildLanguageSpecificWebLink } from '../../data/bible-link-builder'
+import { buildLanguageSpecificWebLink, getLocalizedBookName } from '../../data/bible-link-builder'
 import { t } from '../config/i18n'
 
 const WeeklyReadingPage = () => {
@@ -45,10 +45,10 @@ const WeeklyReadingPage = () => {
       return
     }
 
-    // Pass current book as default (Isaiah for now)
+    // Pass current book as default
     const defaultBook = weekReading ? {
       name: weekReading.book,
-      number: 23 // Isaiah
+      number: weekReading.bookNumber || 22 // Default to Isaiah if no bookNumber
     } : null
 
     const result = parseReadingInput(readingInput, defaultBook)
@@ -260,7 +260,7 @@ const WeeklyReadingPage = () => {
         {/* Reading Title Card */}
         <div className="card card-blue mb-4">
           <h2 className="text-2xl font-bold text-blue-900 mb-3">
-            {weekReading.reading}
+            {weekReading.bookNumber ? `${getLocalizedBookName(weekReading.bookNumber)} ${weekReading.reading.split(' ').slice(1).join(' ')}` : weekReading.reading}
           </h2>
 
           {/* Progress Bar */}
@@ -506,7 +506,7 @@ const WeeklyReadingPage = () => {
                         isPartial ? 'text-yellow-900' :
                         'text-gray-800'
                       }`}>
-                        {weekReading.book} {chapter}
+                        {weekReading.bookNumber ? `${getLocalizedBookName(weekReading.bookNumber)} ${chapter}` : `${weekReading.book} ${chapter}`}
                       </p>
                       {isPartial && chapterData.verses && (
                         <p className="text-xs text-yellow-700">

@@ -3,6 +3,7 @@ import { ExternalLink, Calendar } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { t } from '../config/i18n'
 import { getCurrentWeekReading } from '../../data/weekly-reading-schedule'
+import { getLocalizedBookName } from '../../data/bible-link-builder'
 
 const WeeklyReadingCard = () => {
   const navigate = useNavigate()
@@ -62,7 +63,7 @@ const WeeklyReadingCard = () => {
       </h2>
 
       <p className="card-description">
-        {t('weekly.week_of')} {weekReading.reading}
+        {t('weekly.week_of')} {weekReading.bookNumber ? `${getLocalizedBookName(weekReading.bookNumber)} ${weekReading.reading.split(' ').slice(1).join(' ')}` : weekReading.reading}
       </p>
 
       <div className="card-footer card-footer-blue">
