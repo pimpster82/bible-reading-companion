@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { getCurrentWeekReading, formatWeekRange } from '../../data/weekly-reading-schedule'
 import { parseReadingInput, formatChapterStatus, getNextReading } from '../utils/readingParser'
 import { buildJWLibraryDeepLink } from '../../data/bible-link-builder'
+import { t } from '../config/i18n'
 
 const WeeklyReadingPage = () => {
   const navigate = useNavigate()
@@ -40,7 +41,7 @@ const WeeklyReadingPage = () => {
 
   const handleSubmitReading = () => {
     if (!readingInput.trim()) {
-      setInputError('Bitte Eingabe machen')
+      setInputError(t('weekly.input_error'))
       return
     }
 
@@ -67,7 +68,7 @@ const WeeklyReadingPage = () => {
 
     // Check if parsed book matches expected book
     if (result.book && result.book.name !== weekReading.book) {
-      setInputError(`Erwartet: ${weekReading.book}, aber ${result.book.name} eingegeben`)
+      setInputError(t('weekly.error_book_mismatch', null, {expected: weekReading.book, actual: result.book.name}))
       setSuggestion(null)
       return
     }
@@ -77,7 +78,7 @@ const WeeklyReadingPage = () => {
     if (invalidChapters.length > 0) {
       const invalidList = invalidChapters.map(c => c.chapter).join(', ')
       const expectedList = weekReading.chapters.join(', ')
-      setInputError(`Kapitel ${invalidList} nicht in dieser Woche erwartet. Erwartet: Kapitel ${expectedList}`)
+      setInputError(t('weekly.error_invalid_chapters', null, {invalid: invalidList, expected: expectedList}))
       setSuggestion(null)
       return
     }
@@ -223,10 +224,10 @@ const WeeklyReadingPage = () => {
             className="flex items-center gap-2 text-gray-700 hover:text-gray-900 mb-4"
           >
             <ArrowLeft className="w-5 h-5" />
-            Zurück
+            {t('nav.back')}
           </button>
           <div className="card card-blue">
-            <p className="text-gray-600">Keine Lesung für diese Woche verfügbar.</p>
+            <p className="text-gray-600">{t('weekly.no_reading')}</p>
           </div>
         </div>
       </div>
@@ -248,11 +249,11 @@ const WeeklyReadingPage = () => {
             className="flex items-center gap-2 text-gray-700 hover:text-gray-900 mb-4"
           >
             <ArrowLeft className="w-5 h-5" />
-            Zurück
+            {t('nav.back')}
           </button>
 
           <h1 className="text-xl font-bold text-gray-800 mb-2">
-            Wöchentliches Lesen
+            {t('weekly.page_title')}
           </h1>
           <p className="text-sm text-gray-600">
             {formatWeekRange(weekReading.weekStart, weekReading.weekEnd)}
@@ -282,13 +283,13 @@ const WeeklyReadingPage = () => {
         {/* Smart Reading Input */}
         <div className="card card-blue mb-4">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="font-semibold text-blue-900">Gelesen eingeben</h3>
+            <h3 className="font-semibold text-blue-900">{t('weekly.input_title')}</h3>
             <button
               onClick={() => setShowInput(!showInput)}
               className="text-sm text-blue-700 hover:text-blue-900 flex items-center gap-1"
             >
               <Edit3 className="w-4 h-4" />
-              {showInput ? 'Schließen' : 'Eingeben'}
+              {showInput ? t('weekly.close') : t('weekly.submit_input')}
             </button>
           </div>
 
@@ -302,7 +303,7 @@ const WeeklyReadingPage = () => {
                     setReadingInput(e.target.value)
                     setInputError(null)
                   }}
-                  placeholder="Was hast du gelesen? (z.B. 9 oder 9-10)"
+                  placeholder={t('weekly.input_placeholder')}
                   className="w-full px-3 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
                 {inputError && (
@@ -314,7 +315,7 @@ const WeeklyReadingPage = () => {
                     {suggestion.type === 'did_you_mean' && (
                       <>
                         <p className="text-sm font-medium text-yellow-900 mb-2">
-                          Meintest du...?
+                          {t('weekly.suggest_did_you_mean')}
                         </p>
                         <div className="flex flex-wrap gap-2">
                           {suggestion.suggestions.map((book) => (
@@ -331,14 +332,14 @@ const WeeklyReadingPage = () => {
                           onClick={() => setSuggestion(null)}
                           className="text-xs text-gray-600 mt-2 hover:text-gray-800"
                         >
-                          Abbrechen
+                          {t('weekly.suggest_cancel')}
                         </button>
                       </>
                     )}
                     {suggestion.type === 'unclear' && (
                       <>
                         <p className="text-sm font-medium text-yellow-900 mb-2">
-                          Welches Buch meinst du?
+                          {t('weekly.suggest_which_book')}
                         </p>
                         <div className="flex flex-wrap gap-2">
                           {suggestion.suggestions.map((book) => (
@@ -355,31 +356,30 @@ const WeeklyReadingPage = () => {
                           onClick={() => setSuggestion(null)}
                           className="text-xs text-gray-600 mt-2 hover:text-gray-800"
                         >
-                          Neu eingeben
+                          {t('weekly.suggest_cancel_new_input')}
                         </button>
                       </>
                     )}
                     {suggestion.type === 'not_found' && (
                       <>
                         <p className="text-sm text-yellow-900">
-                          Buch "{suggestion.input}" nicht gefunden. Bitte erneut versuchen.
+                          {t('weekly.suggest_not_found', null, {input: suggestion.input})}
                         </p>
                         <button
                           onClick={() => setSuggestion(null)}
                           className="text-xs text-gray-600 mt-2 hover:text-gray-800"
                         >
-                          OK
+                          {t('weekly.suggest_ok')}
                         </button>
                       </>
                     )}
                     {suggestion.type === 'invalid_chapter' && (
                       <>
                         <p className="text-sm text-yellow-900 mb-2">
-                          <strong>{suggestion.bookName}</strong> hat nur{' '}
-                          <strong>{suggestion.maxChapters}</strong> Kapitel.
+                          {t('weekly.suggest_invalid_chapter', null, {book: suggestion.bookName, max: suggestion.maxChapters})}
                         </p>
                         <p className="text-sm font-medium text-yellow-900 mb-2">
-                          Meintest du:
+                          {t('weekly.suggest_did_you_mean_this')}
                         </p>
                         <div className="flex flex-wrap gap-2">
                           {suggestion.suggestions.map((sug, idx) => (
@@ -400,7 +400,7 @@ const WeeklyReadingPage = () => {
                           onClick={() => setSuggestion(null)}
                           className="text-xs text-gray-600 mt-2 hover:text-gray-800"
                         >
-                          Neu eingeben
+                          {t('weekly.suggest_cancel_new_input')}
                         </button>
                       </>
                     )}
@@ -416,7 +416,7 @@ const WeeklyReadingPage = () => {
                 onClick={handleSubmitReading}
                 className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg font-medium hover:bg-blue-700 transition-colors"
               >
-                Speichern
+                {t('weekly.submit')}
               </button>
             </div>
           )}
@@ -425,26 +425,26 @@ const WeeklyReadingPage = () => {
         {/* Chapter List */}
         <div className="space-y-2">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-sm font-semibold text-gray-700">Kapitel einzeln:</h3>
+            <h3 className="text-sm font-semibold text-gray-700">{t('weekly.chapters')}</h3>
             <div className="flex gap-2">
               {lastAction && (
                 <button
                   onClick={handleUndo}
-                  title="Letzte Aktion rückgängig machen"
+                  title={t('weekly.undo')}
                   className="text-xs text-blue-600 hover:text-blue-800 hover:underline flex items-center gap-1"
                 >
                   <RotateCcw className="w-3 h-3" />
-                  Rückgängig
+                  {t('weekly.undo')}
                 </button>
               )}
               {readCount > 0 && (
                 <button
                   onClick={() => setShowClearConfirm(true)}
-                  title="Alle Einträge löschen"
+                  title={t('weekly.clear_all')}
                   className="text-xs text-red-600 hover:text-red-800 hover:underline flex items-center gap-1"
                 >
                   <Trash2 className="w-3 h-3" />
-                  Alles löschen
+                  {t('weekly.clear_all')}
                 </button>
               )}
             </div>
@@ -454,20 +454,20 @@ const WeeklyReadingPage = () => {
           {showClearConfirm && (
             <div className="mb-3 p-3 bg-red-50 border border-red-200 rounded-lg">
               <p className="text-sm text-red-900 mb-2">
-                Möchtest du wirklich alle Einträge löschen?
+                {t('weekly.clear_confirm')}
               </p>
               <div className="flex gap-2">
                 <button
                   onClick={handleClearAll}
                   className="text-xs bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
                 >
-                  Ja, löschen
+                  {t('weekly.clear_yes')}
                 </button>
                 <button
                   onClick={() => setShowClearConfirm(false)}
                   className="text-xs bg-gray-300 text-gray-800 px-3 py-1 rounded hover:bg-gray-400"
                 >
-                  Abbrechen
+                  {t('weekly.clear_cancel')}
                 </button>
               </div>
             </div>
@@ -513,8 +513,8 @@ const WeeklyReadingPage = () => {
                       </p>
                       {isPartial && chapterData.verses && (
                         <p className="text-xs text-yellow-700">
-                          Bis Vers {chapterData.verses}
-                          {chapterData.continueFrom && ` · Weiter ab ${chapterData.continueFrom}`}
+                          {t('weekly.verse_read_until', null, {verse: chapterData.verses})}
+                          {chapterData.continueFrom && ` · ${t('weekly.verse_continue_from', null, {verse: chapterData.continueFrom})}`}
                         </p>
                       )}
                     </div>
@@ -530,7 +530,7 @@ const WeeklyReadingPage = () => {
                     }`}
                   >
                     <ExternalLink className="w-4 h-4" />
-                    Öffnen
+                    {t('weekly.open_chapter')}
                   </button>
                 </div>
               </div>
@@ -542,7 +542,7 @@ const WeeklyReadingPage = () => {
         {readCount === totalChapters && totalChapters > 0 && (
           <div className="mt-6 card bg-green-50 border-green-200">
             <p className="text-center text-green-800 font-medium">
-              ✓ Woche abgeschlossen! Gut gemacht!
+              {t('weekly.week_complete')}
             </p>
           </div>
         )}

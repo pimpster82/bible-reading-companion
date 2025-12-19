@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { ExternalLink, Sun, Flame } from 'lucide-react'
+import { t } from '../config/i18n'
 import {
   isDailyTextComplete,
   markDailyTextComplete,
@@ -39,7 +40,7 @@ const DailyTextCard = () => {
     <div className="bg-white rounded-lg p-4 shadow-sm border border-indigo-100">
       <h2 className="font-semibold text-indigo-900 mb-3 text-base flex items-center gap-2">
         <Sun className="w-4 h-4" />
-        TAGESTEXT
+        {t('dailytext.title')}
       </h2>
 
       <p className="text-sm text-gray-700 mb-3 italic">
@@ -53,7 +54,7 @@ const DailyTextCard = () => {
             onClick={handleToggleComplete}
             className="text-sm text-gray-600 hover:text-green-600 font-medium"
           >
-            Als gelesen markieren
+            {t('dailytext.mark_read')}
           </button>
         )}
       </div>
@@ -61,7 +62,7 @@ const DailyTextCard = () => {
       <div className="pt-3 border-t border-indigo-200 flex items-center justify-between">
         <div className="flex items-center gap-3">
           {isComplete && (
-            <p className="text-sm text-green-600 font-medium">✓ Gelesen</p>
+            <p className="text-sm text-green-600 font-medium">{t('dailytext.marked_read')}</p>
           )}
           {streak > 0 && (
             <p className="text-xs text-indigo-700 flex items-center gap-1">
@@ -75,7 +76,7 @@ const DailyTextCard = () => {
           className="text-sm text-indigo-900 font-medium flex items-center gap-1 hover:text-indigo-700"
         >
           <ExternalLink className="w-4 h-4" />
-          Öffnen
+          {t('dailytext.open')}
         </button>
       </div>
     </div>

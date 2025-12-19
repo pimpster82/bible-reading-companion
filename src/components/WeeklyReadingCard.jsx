@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { ExternalLink, Calendar } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
+import { t } from '../config/i18n'
 import { getCurrentWeekReading } from '../../data/weekly-reading-schedule'
 
 const WeeklyReadingCard = () => {
@@ -42,9 +43,9 @@ const WeeklyReadingCard = () => {
       <div className="card card-blue">
         <h2 className="card-header card-header-blue">
           <Calendar className="w-4 h-4" />
-          WÖCHENTLICHES LESEN
+          {t('weekly.title')}
         </h2>
-        <p className="text-sm text-gray-600">Keine Lesung für diese Woche verfügbar.</p>
+        <p className="text-sm text-gray-600">{t('weekly.no_reading')}</p>
       </div>
     )
   }
@@ -57,23 +58,23 @@ const WeeklyReadingCard = () => {
     <div className="card card-blue">
       <h2 className="card-header card-header-blue">
         <Calendar className="w-4 h-4" />
-        WÖCHENTLICHES LESEN
+        {t('weekly.title')}
       </h2>
 
       <p className="card-description">
-        Diese Woche: {weekReading.reading}
+        {t('weekly.week_of')} {weekReading.reading}
       </p>
 
       <div className="card-footer card-footer-blue">
         <p className="card-stat-blue">
-          {readCount} von {totalChapters} Kapiteln gelesen
+          {t('weekly.chapters_read', null, { current: readCount, total: totalChapters })}
         </p>
         <button
           onClick={handleOpenReading}
           className="btn-open btn-open-blue"
         >
           <ExternalLink className="w-4 h-4" />
-          Öffnen
+          {t('weekly.open')}
         </button>
       </div>
     </div>
