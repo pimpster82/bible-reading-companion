@@ -1,0 +1,395 @@
+/**
+ * Internationalization (i18n) Dictionary
+ * Contains all UI strings for supported languages
+ * Add new strings here in all supported languages
+ */
+
+export const translations = {
+  de: {
+    // Navigation & Header
+    'nav.today': 'HEUTE',
+    'nav.settings': 'Einstellungen',
+    'nav.back': 'Zurück',
+
+    // Home Page
+    'home.yeartext': 'Jahrestext',
+    'home.daily_text': 'TAGESTEXT',
+    'home.weekly_reading': 'WÖCHENTLICHES LESEN',
+    'home.personal_reading': 'PERSÖNLICHES LESEN (PBP)',
+    'home.reading_plan': 'Plan: Bibel in 1 Jahr',
+    'home.next_reading': 'Als nächstes',
+    'home.day_progress': 'Tag {current} von {total} · {percent}% abgeschlossen',
+    'home.open': 'Öffnen',
+
+    // Date Picker
+    'datepicker.title': 'Test-Datum wählen',
+    'datepicker.reset': 'Auf heute zurücksetzen',
+    'datepicker.warning': '⚠️ Test-Modus: Das Datum wird für alle Komponenten überschrieben',
+
+    // Settings Page
+    'settings.title': 'Einstellungen',
+    'settings.subtitle': 'Passe die App an deine Bedürfnisse an',
+    'settings.language': 'Sprache',
+    'settings.language_note': 'Die App wird neu geladen um die Sprache zu ändern',
+    'settings.weekly_reading': 'Wöchentliches Lesen',
+    'settings.meeting_day': 'Versammlungstag',
+    'settings.meeting_day_note': 'Die Woche läuft von einem Versammlungstag zum nächsten',
+    'settings.personal_plan': 'Persönliches Bibellesen',
+    'settings.reading_plan': 'Leseplan',
+    'settings.reading_plan_note': 'Wähle wie du die Bibel lesen möchtest',
+    'settings.notifications': 'Erinnerungen',
+    'settings.daily_reminder': 'Tägliche Erinnerung',
+    'settings.reminder_time': 'Uhrzeit',
+    'settings.for_daily_text': 'Für Tagestext',
+    'settings.reminders_coming': '⚠️ Benachrichtigungen werden in einer späteren Version implementiert',
+    'settings.schedule_update': 'Leseplan aktualisieren',
+    'settings.schedule_year': 'Jahr',
+    'settings.download_schedule': 'Leseplan herunterladen',
+    'settings.downloading': 'Lädt...',
+    'settings.schedule_loading': 'Der Leseplan wird automatisch aus den vorhandenen Dateien geladen.',
+    'settings.reset': 'Zurücksetzen',
+    'settings.reset_settings': 'Einstellungen zurücksetzen',
+    'settings.reset_settings_note': 'Setze alle Einstellungen auf Standardwerte zurück. Deine Lesefortschritte bleiben erhalten.',
+    'settings.reset_settings_button': 'Alle Einstellungen zurücksetzen',
+    'settings.reset_progress': 'Lesefortschritt zurücksetzen',
+    'settings.reset_progress_note': '⚠️ Löscht alle Lesefortschritte (Wöchentliches Lesen, Tagestext, Persönliches Lesen). Deine Einstellungen bleiben erhalten.',
+    'settings.reset_progress_button': 'Lesefortschritt löschen',
+    'settings.reset_confirm': 'Alle Einstellungen zurücksetzen? Dies löscht NICHT deine Lesefortschritte.',
+    'settings.reset_progress_confirm': 'Möchtest du wirklich ALLE Lesefortschritte zurücksetzen? Dies kann nicht rückgängig gemacht werden!',
+    'settings.reset_success': '✅ Lesefortschritt erfolgreich zurückgesetzt!',
+    'settings.version': 'Bible Reading Companion v{version}',
+    'settings.made_with': 'Made with ❤️ for Bible readers',
+
+    // Weekdays
+    'weekday.sunday': 'Sonntag',
+    'weekday.monday': 'Montag',
+    'weekday.tuesday': 'Dienstag',
+    'weekday.wednesday': 'Mittwoch',
+    'weekday.thursday': 'Donnerstag',
+    'weekday.friday': 'Freitag',
+    'weekday.saturday': 'Samstag',
+
+    // Reading Plans
+    'readingplan.free': 'Freies Lesen (Bible Tree)',
+    'readingplan.1year': 'Bibel in 1 Jahr',
+    'readingplan.2years': 'Bibel in 2 Jahren',
+    'readingplan.chronological': 'Chronologisch',
+    'readingplan.bookbybook': 'Buch für Buch',
+  },
+
+  en: {
+    // Navigation & Header
+    'nav.today': 'TODAY',
+    'nav.settings': 'Settings',
+    'nav.back': 'Back',
+
+    // Home Page
+    'home.yeartext': 'Yeartext',
+    'home.daily_text': 'DAILY TEXT',
+    'home.weekly_reading': 'WEEKLY READING',
+    'home.personal_reading': 'PERSONAL READING (PBP)',
+    'home.reading_plan': 'Plan: Bible in 1 Year',
+    'home.next_reading': 'Next',
+    'home.day_progress': 'Day {current} of {total} · {percent}% completed',
+    'home.open': 'Open',
+
+    // Date Picker
+    'datepicker.title': 'Choose Test Date',
+    'datepicker.reset': 'Reset to Today',
+    'datepicker.warning': '⚠️ Test Mode: Date is overridden for all components',
+
+    // Settings Page
+    'settings.title': 'Settings',
+    'settings.subtitle': 'Customize the app to your needs',
+    'settings.language': 'Language',
+    'settings.language_note': 'The app will reload to apply the language change',
+    'settings.weekly_reading': 'Weekly Reading',
+    'settings.meeting_day': 'Meeting Day',
+    'settings.meeting_day_note': 'The week runs from one meeting day to the next',
+    'settings.personal_plan': 'Personal Bible Reading',
+    'settings.reading_plan': 'Reading Plan',
+    'settings.reading_plan_note': 'Choose how you want to read the Bible',
+    'settings.notifications': 'Reminders',
+    'settings.daily_reminder': 'Daily Reminder',
+    'settings.reminder_time': 'Time',
+    'settings.for_daily_text': 'For Daily Text',
+    'settings.reminders_coming': '⚠️ Notifications will be implemented in a future version',
+    'settings.schedule_update': 'Update Reading Schedule',
+    'settings.schedule_year': 'Year',
+    'settings.download_schedule': 'Download Schedule',
+    'settings.downloading': 'Loading...',
+    'settings.schedule_loading': 'The reading schedule is automatically loaded from existing files.',
+    'settings.reset': 'Reset',
+    'settings.reset_settings': 'Reset Settings',
+    'settings.reset_settings_note': 'Reset all settings to default values. Your reading progress will not be deleted.',
+    'settings.reset_settings_button': 'Reset All Settings',
+    'settings.reset_progress': 'Reset Reading Progress',
+    'settings.reset_progress_note': '⚠️ Deletes all reading progress (Weekly Reading, Daily Text, Personal Reading). Your settings will remain.',
+    'settings.reset_progress_button': 'Delete Reading Progress',
+    'settings.reset_confirm': 'Reset all settings? This will NOT delete your reading progress.',
+    'settings.reset_progress_confirm': 'Do you really want to reset ALL reading progress? This cannot be undone!',
+    'settings.reset_success': '✅ Reading progress successfully reset!',
+    'settings.version': 'Bible Reading Companion v{version}',
+    'settings.made_with': 'Made with ❤️ for Bible readers',
+
+    // Weekdays
+    'weekday.sunday': 'Sunday',
+    'weekday.monday': 'Monday',
+    'weekday.tuesday': 'Tuesday',
+    'weekday.wednesday': 'Wednesday',
+    'weekday.thursday': 'Thursday',
+    'weekday.friday': 'Friday',
+    'weekday.saturday': 'Saturday',
+
+    // Reading Plans
+    'readingplan.free': 'Free Reading (Bible Tree)',
+    'readingplan.1year': 'Bible in 1 Year',
+    'readingplan.2years': 'Bible in 2 Years',
+    'readingplan.chronological': 'Chronological',
+    'readingplan.bookbybook': 'Book by Book',
+  },
+
+  es: {
+    // Navigation & Header
+    'nav.today': 'HOY',
+    'nav.settings': 'Configuración',
+    'nav.back': 'Atrás',
+
+    // Home Page
+    'home.yeartext': 'Texto del Año',
+    'home.daily_text': 'TEXTO DIARIO',
+    'home.weekly_reading': 'LECTURA SEMANAL',
+    'home.personal_reading': 'LECTURA PERSONAL',
+    'home.reading_plan': 'Plan: Biblia en 1 Año',
+    'home.next_reading': 'Siguiente',
+    'home.day_progress': 'Día {current} de {total} · {percent}% completado',
+    'home.open': 'Abrir',
+
+    // Date Picker
+    'datepicker.title': 'Elegir Fecha de Prueba',
+    'datepicker.reset': 'Resetear a Hoy',
+    'datepicker.warning': '⚠️ Modo Prueba: La fecha se anula para todos los componentes',
+
+    // Settings Page
+    'settings.title': 'Configuración',
+    'settings.subtitle': 'Personaliza la app según tus necesidades',
+    'settings.language': 'Idioma',
+    'settings.language_note': 'La app se recargará para aplicar el cambio de idioma',
+    'settings.weekly_reading': 'Lectura Semanal',
+    'settings.meeting_day': 'Día de Reunión',
+    'settings.meeting_day_note': 'La semana va de un día de reunión al siguiente',
+    'settings.personal_plan': 'Lectura Personal de la Biblia',
+    'settings.reading_plan': 'Plan de Lectura',
+    'settings.reading_plan_note': 'Elige cómo quieres leer la Biblia',
+    'settings.notifications': 'Recordatorios',
+    'settings.daily_reminder': 'Recordatorio Diario',
+    'settings.reminder_time': 'Hora',
+    'settings.for_daily_text': 'Para Texto Diario',
+    'settings.reminders_coming': '⚠️ Las notificaciones se implementarán en una versión futura',
+    'settings.schedule_update': 'Actualizar Cronograma de Lectura',
+    'settings.schedule_year': 'Año',
+    'settings.download_schedule': 'Descargar Cronograma',
+    'settings.downloading': 'Cargando...',
+    'settings.schedule_loading': 'El cronograma de lectura se carga automáticamente desde archivos existentes.',
+    'settings.reset': 'Restablecer',
+    'settings.reset_settings': 'Restablecer Configuración',
+    'settings.reset_settings_note': 'Restablece todos los parámetros a sus valores predeterminados. Tu progreso de lectura no será eliminado.',
+    'settings.reset_settings_button': 'Restablecer Toda la Configuración',
+    'settings.reset_progress': 'Restablecer Progreso de Lectura',
+    'settings.reset_progress_note': '⚠️ Elimina todo el progreso de lectura (Lectura Semanal, Texto Diario, Lectura Personal). Tu configuración permanecerá.',
+    'settings.reset_progress_button': 'Eliminar Progreso de Lectura',
+    'settings.reset_confirm': '¿Restablecer toda la configuración? Esto NO eliminará tu progreso de lectura.',
+    'settings.reset_progress_confirm': '¿Realmente deseas restablecer TODO el progreso de lectura? ¡Esto no se puede deshacer!',
+    'settings.reset_success': '✅ ¡Progreso de lectura restablecido exitosamente!',
+    'settings.version': 'Bible Reading Companion v{version}',
+    'settings.made_with': 'Hecho con ❤️ para lectores de la Biblia',
+
+    // Weekdays
+    'weekday.sunday': 'Domingo',
+    'weekday.monday': 'Lunes',
+    'weekday.tuesday': 'Martes',
+    'weekday.wednesday': 'Miércoles',
+    'weekday.thursday': 'Jueves',
+    'weekday.friday': 'Viernes',
+    'weekday.saturday': 'Sábado',
+
+    // Reading Plans
+    'readingplan.free': 'Lectura Libre (Árbol Bíblico)',
+    'readingplan.1year': 'Biblia en 1 Año',
+    'readingplan.2years': 'Biblia en 2 Años',
+    'readingplan.chronological': 'Cronológico',
+    'readingplan.bookbybook': 'Libro por Libro',
+  },
+
+  it: {
+    // Navigation & Header
+    'nav.today': 'OGGI',
+    'nav.settings': 'Impostazioni',
+    'nav.back': 'Indietro',
+
+    // Home Page
+    'home.yeartext': 'Tema dell\'Anno',
+    'home.daily_text': 'TESTO GIORNALIERO',
+    'home.weekly_reading': 'LETTURA SETTIMANALE',
+    'home.personal_reading': 'LETTURA PERSONALE',
+    'home.reading_plan': 'Piano: Bibbia in 1 Anno',
+    'home.next_reading': 'Prossimo',
+    'home.day_progress': 'Giorno {current} di {total} · {percent}% completato',
+    'home.open': 'Apri',
+
+    // Date Picker
+    'datepicker.title': 'Scegli Data di Prova',
+    'datepicker.reset': 'Ripristina a Oggi',
+    'datepicker.warning': '⚠️ Modalità Test: La data è sovrascritta per tutti i componenti',
+
+    // Settings Page
+    'settings.title': 'Impostazioni',
+    'settings.subtitle': 'Personalizza l\'app secondo le tue esigenze',
+    'settings.language': 'Lingua',
+    'settings.language_note': 'L\'app si ricaricherà per applicare il cambio di lingua',
+    'settings.weekly_reading': 'Lettura Settimanale',
+    'settings.meeting_day': 'Giorno di Riunione',
+    'settings.meeting_day_note': 'La settimana va da un giorno di riunione al successivo',
+    'settings.personal_plan': 'Lettura Personale della Bibbia',
+    'settings.reading_plan': 'Piano di Lettura',
+    'settings.reading_plan_note': 'Scegli come vuoi leggere la Bibbia',
+    'settings.notifications': 'Promemoria',
+    'settings.daily_reminder': 'Promemoria Giornaliero',
+    'settings.reminder_time': 'Ora',
+    'settings.for_daily_text': 'Per Testo Giornaliero',
+    'settings.reminders_coming': '⚠️ Le notifiche saranno implementate in una versione futura',
+    'settings.schedule_update': 'Aggiorna Calendario di Lettura',
+    'settings.schedule_year': 'Anno',
+    'settings.download_schedule': 'Scarica Calendario',
+    'settings.downloading': 'Caricamento...',
+    'settings.schedule_loading': 'Il calendario di lettura viene caricato automaticamente da file esistenti.',
+    'settings.reset': 'Ripristina',
+    'settings.reset_settings': 'Ripristina Impostazioni',
+    'settings.reset_settings_note': 'Ripristina tutte le impostazioni ai valori predefiniti. Il tuo progresso di lettura non sarà eliminato.',
+    'settings.reset_settings_button': 'Ripristina Tutte le Impostazioni',
+    'settings.reset_progress': 'Ripristina Progresso di Lettura',
+    'settings.reset_progress_note': '⚠️ Elimina tutto il progresso di lettura (Lettura Settimanale, Testo Giornaliero, Lettura Personale). Le tue impostazioni rimarranno.',
+    'settings.reset_progress_button': 'Elimina Progresso di Lettura',
+    'settings.reset_confirm': 'Ripristinare tutte le impostazioni? Questo NON eliminerà il tuo progresso di lettura.',
+    'settings.reset_progress_confirm': 'Vuoi davvero ripristinare TUTTO il progresso di lettura? Questo non può essere annullato!',
+    'settings.reset_success': '✅ Progresso di lettura ripristinato con successo!',
+    'settings.version': 'Bible Reading Companion v{version}',
+    'settings.made_with': 'Realizzato con ❤️ per i lettori della Bibbia',
+
+    // Weekdays
+    'weekday.sunday': 'Domenica',
+    'weekday.monday': 'Lunedì',
+    'weekday.tuesday': 'Martedì',
+    'weekday.wednesday': 'Mercoledì',
+    'weekday.thursday': 'Giovedì',
+    'weekday.friday': 'Venerdì',
+    'weekday.saturday': 'Sabato',
+
+    // Reading Plans
+    'readingplan.free': 'Lettura Libera (Albero Biblico)',
+    'readingplan.1year': 'Bibbia in 1 Anno',
+    'readingplan.2years': 'Bibbia in 2 Anni',
+    'readingplan.chronological': 'Cronologico',
+    'readingplan.bookbybook': 'Libro per Libro',
+  },
+
+  fr: {
+    // Navigation & Header
+    'nav.today': 'AUJOURD\'HUI',
+    'nav.settings': 'Paramètres',
+    'nav.back': 'Retour',
+
+    // Home Page
+    'home.yeartext': 'Texte de l\'Année',
+    'home.daily_text': 'TEXTE QUOTIDIEN',
+    'home.weekly_reading': 'LECTURE HEBDOMADAIRE',
+    'home.personal_reading': 'LECTURE PERSONNELLE',
+    'home.reading_plan': 'Plan: Bible en 1 An',
+    'home.next_reading': 'Suivant',
+    'home.day_progress': 'Jour {current} sur {total} · {percent}% terminé',
+    'home.open': 'Ouvrir',
+
+    // Date Picker
+    'datepicker.title': 'Choisir Date de Test',
+    'datepicker.reset': 'Réinitialiser à Aujourd\'hui',
+    'datepicker.warning': '⚠️ Mode Test: La date est remplacée pour tous les composants',
+
+    // Settings Page
+    'settings.title': 'Paramètres',
+    'settings.subtitle': 'Personnalisez l\'application à vos besoins',
+    'settings.language': 'Langue',
+    'settings.language_note': 'L\'application se rechargera pour appliquer le changement de langue',
+    'settings.weekly_reading': 'Lecture Hebdomadaire',
+    'settings.meeting_day': 'Jour de Réunion',
+    'settings.meeting_day_note': 'La semaine s\'écoule d\'un jour de réunion à l\'autre',
+    'settings.personal_plan': 'Lecture Personnelle de la Bible',
+    'settings.reading_plan': 'Plan de Lecture',
+    'settings.reading_plan_note': 'Choisissez comment vous voulez lire la Bible',
+    'settings.notifications': 'Rappels',
+    'settings.daily_reminder': 'Rappel Quotidien',
+    'settings.reminder_time': 'Heure',
+    'settings.for_daily_text': 'Pour Texte Quotidien',
+    'settings.reminders_coming': '⚠️ Les notifications seront implémentées dans une version ultérieure',
+    'settings.schedule_update': 'Mettre à Jour le Calendrier de Lecture',
+    'settings.schedule_year': 'Année',
+    'settings.download_schedule': 'Télécharger le Calendrier',
+    'settings.downloading': 'Chargement...',
+    'settings.schedule_loading': 'Le calendrier de lecture est chargé automatiquement à partir des fichiers existants.',
+    'settings.reset': 'Réinitialiser',
+    'settings.reset_settings': 'Réinitialiser les Paramètres',
+    'settings.reset_settings_note': 'Réinitialisez tous les paramètres à leurs valeurs par défaut. Votre progression de lecture ne sera pas supprimée.',
+    'settings.reset_settings_button': 'Réinitialiser Tous les Paramètres',
+    'settings.reset_progress': 'Réinitialiser la Progression de Lecture',
+    'settings.reset_progress_note': '⚠️ Supprime toute la progression de lecture (Lecture Hebdomadaire, Texte Quotidien, Lecture Personnelle). Vos paramètres resteront.',
+    'settings.reset_progress_button': 'Supprimer la Progression de Lecture',
+    'settings.reset_confirm': 'Réinitialiser tous les paramètres? Cela ne supprimera PAS votre progression de lecture.',
+    'settings.reset_progress_confirm': 'Voulez-vous vraiment réinitialiser TOUTE la progression de lecture? Cela ne peut pas être annulé!',
+    'settings.reset_success': '✅ Progression de lecture réinitialisée avec succès!',
+    'settings.version': 'Bible Reading Companion v{version}',
+    'settings.made_with': 'Fait avec ❤️ pour les lecteurs de la Bible',
+
+    // Weekdays
+    'weekday.sunday': 'Dimanche',
+    'weekday.monday': 'Lundi',
+    'weekday.tuesday': 'Mardi',
+    'weekday.wednesday': 'Mercredi',
+    'weekday.thursday': 'Jeudi',
+    'weekday.friday': 'Vendredi',
+    'weekday.saturday': 'Samedi',
+
+    // Reading Plans
+    'readingplan.free': 'Lecture Libre (Arbre Biblique)',
+    'readingplan.1year': 'Bible en 1 An',
+    'readingplan.2years': 'Bible en 2 Ans',
+    'readingplan.chronological': 'Chronologique',
+    'readingplan.bookbybook': 'Livre par Livre',
+  },
+}
+
+/**
+ * Get translated string for current language
+ * @param {string} key - Translation key (e.g., 'nav.today')
+ * @param {string} language - Language code (optional, uses current language if not provided)
+ * @param {Object} params - Parameters for string interpolation (e.g., {version: '0.0.1'})
+ * @returns {string} Translated string
+ */
+export const t = (key, language = null, params = {}) => {
+  const lang = language || localStorage.getItem('app_language') || 'de'
+  let translation = translations[lang]?.[key] || translations['de'][key] || key
+
+  // Replace parameters in translation
+  Object.entries(params).forEach(([paramKey, paramValue]) => {
+    translation = translation.replace(`{${paramKey}}`, paramValue)
+  })
+
+  return translation
+}
+
+/**
+ * Get all translations for a language
+ * @param {string} language - Language code
+ * @returns {Object} All translations for the language
+ */
+export const getTranslations = (language = 'de') => {
+  return translations[language] || translations['de']
+}
