@@ -134,9 +134,22 @@ const findBook = (bookInput, languageCode = null) => {
   }
 }
 
+/**
+ * Error message keys for i18n translation
+ * The actual translation happens in the React component via t() function
+ */
+export const ERROR_KEYS = {
+  INVALID_INPUT: 'weekly.error_invalid_input',
+  FORMAT_NOT_RECOGNIZED: 'weekly.error_format_not_recognized',
+  PARSING_ERROR: 'weekly.error_parsing',
+  INVALID_RANGE: 'weekly.error_invalid_range',
+  INVALID_RANGE_CHAPTERS: 'weekly.error_invalid_range_chapters',
+  CHAPTER_EXCEEDS: 'weekly.error_chapter_exceeds'
+}
+
 export const parseReadingInput = (input, defaultBook = null) => {
   if (!input || typeof input !== 'string') {
-    return { chapters: [], error: 'Ungültige Eingabe' }
+    return { chapters: [], errorKey: ERROR_KEYS.INVALID_INPUT }
   }
 
   const trimmed = input.trim()
@@ -246,7 +259,7 @@ const parseSingleReference = (cleaned, book) => {
       const endVerse = parseInt(chapterToChapterMatch[4])
 
       if (startChapter > endChapter) {
-        return { chapters: [], error: 'Ungültiger Bereich (Start-Kapitel > End-Kapitel)' }
+        return { chapters: [], errorKey: ERROR_KEYS.INVALID_RANGE_CHAPTERS }
       }
 
       const chapters = []
@@ -347,7 +360,7 @@ const parseSingleReference = (cleaned, book) => {
       const end = parseInt(rangeMatch[2])
 
       if (start > end) {
-        return { chapters: [], error: 'Ungültiger Bereich (Start > Ende)' }
+        return { chapters: [], errorKey: ERROR_KEYS.INVALID_RANGE }
       }
 
       const chapters = []
@@ -425,7 +438,8 @@ const parseSingleReference = (cleaned, book) => {
           return {
             chapters: [],
             book,
-            error: `${book.name} hat nur ${book.chapters} Kapitel (eingegeben: ${chapter})`
+            errorKey: ERROR_KEYS.CHAPTER_EXCEEDS,
+            errorParams: { book: book.name, chapters: book.chapters, chapter }
           }
         }
       }
@@ -440,9 +454,9 @@ const parseSingleReference = (cleaned, book) => {
       }
     }
 
-    return { chapters: [], error: 'Format nicht erkannt' }
+    return { chapters: [], errorKey: ERROR_KEYS.FORMAT_NOT_RECOGNIZED }
   } catch (error) {
-    return { chapters: [], error: 'Fehler beim Parsen' }
+    return { chapters: [], errorKey: ERROR_KEYS.PARSING_ERROR }
   }
 }
 

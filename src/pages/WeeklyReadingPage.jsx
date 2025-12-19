@@ -66,6 +66,12 @@ const WeeklyReadingPage = () => {
       return
     }
 
+    if (result.errorKey) {
+      setInputError(t(result.errorKey, null, result.errorParams || {}))
+      setSuggestion(null)
+      return
+    }
+
     // Check if parsed book matches expected book
     if (result.book && result.book.name !== weekReading.book) {
       setInputError(t('weekly.error_book_mismatch', null, {expected: weekReading.book, actual: result.book.name}))
@@ -299,6 +305,11 @@ const WeeklyReadingPage = () => {
                   onChange={(e) => {
                     setReadingInput(e.target.value)
                     setInputError(null)
+                  }}
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter') {
+                      handleSubmitReading()
+                    }
                   }}
                   placeholder={t('weekly.input_placeholder')}
                   className="w-full px-3 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
