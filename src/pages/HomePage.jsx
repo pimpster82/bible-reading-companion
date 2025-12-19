@@ -63,16 +63,15 @@ function HomePage() {
   const handleDateChange = (newDate) => {
     setTestDate(newDate)
     localStorage.setItem('testDate', newDate)
-    // Reload to update all components
-    window.location.reload()
+    // Force component re-render by triggering state update
+    setShowDatePicker(false)
   }
 
   const handleResetDate = () => {
     setTestDate(null)
     localStorage.removeItem('testDate')
     setShowDatePicker(false)
-    // Reload to update all components
-    window.location.reload()
+    // State update will trigger re-render with new date
   }
 
   // Format date for input (YYYY-MM-DD)

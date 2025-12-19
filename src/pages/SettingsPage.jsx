@@ -41,8 +41,8 @@ const SettingsPage = () => {
   const handleLanguageChange = (newLanguage) => {
     setCurrentLanguage(newLanguage)
     setLanguage(newLanguage)
-    // Reload to apply language change
-    window.location.reload()
+    // Navigate to home instead of reload to preserve router context
+    setTimeout(() => navigate('/'), 100)
   }
 
   const handleMeetingDayChange = (day) => {
@@ -84,8 +84,8 @@ Diese Funktion wird in einer zukünftigen Version implementiert. Der Leseplan wi
       localStorage.removeItem('settings_reminderTime')
       localStorage.removeItem('app_language')
 
-      // Reload
-      window.location.reload()
+      // Navigate to home instead of reload to preserve router context
+      setTimeout(() => navigate('/'), 100)
     }
   }
 
@@ -106,9 +106,9 @@ Diese Funktion wird in einer zukünftigen Version implementiert. Der Leseplan wi
       }
       keysToRemove.forEach(key => localStorage.removeItem(key))
 
-      // Success message and reload
+      // Success message and navigate home instead of reload
       alert('✅ Lesefortschritt erfolgreich zurückgesetzt!')
-      window.location.reload()
+      setTimeout(() => navigate('/'), 100)
     }
   }
 
