@@ -80,7 +80,9 @@ export const translations = {
     'dailytext.title': 'TAGESTEXT',
     'dailytext.mark_read': 'Als gelesen markieren',
     'dailytext.marked_read': '✓ Gelesen',
-    'dailytext.day_streak': '{count} {count, plural, one {Tag}, other {Tage}}',
+    'dailytext.day_streak_singular': 'Tag',
+    'dailytext.day_streak_plural': 'Tage',
+    'dailytext.preview': '"Friede Gottes, bewahrt eure Herzen..." — Philipper 4:7',
     'dailytext.open': 'Öffnen',
 
     // Weekly Reading Card & Page
@@ -201,7 +203,9 @@ export const translations = {
     'dailytext.title': 'DAILY TEXT',
     'dailytext.mark_read': 'Mark as read',
     'dailytext.marked_read': '✓ Read',
-    'dailytext.day_streak': '{count} {count, plural, one {day}, other {days}}',
+    'dailytext.day_streak_singular': 'day',
+    'dailytext.day_streak_plural': 'days',
+    'dailytext.preview': '"Let the peace of God rule in your hearts..." — Philippians 4:7',
     'dailytext.open': 'Open',
 
     // Weekly Reading Card & Page
@@ -322,7 +326,9 @@ export const translations = {
     'dailytext.title': 'TEXTO DIARIO',
     'dailytext.mark_read': 'Marcar como leído',
     'dailytext.marked_read': '✓ Leído',
-    'dailytext.day_streak': '{count} {count, plural, one {día}, other {días}}',
+    'dailytext.day_streak_singular': 'día',
+    'dailytext.day_streak_plural': 'días',
+    'dailytext.preview': '"Reine el paz de Dios en vuestros corazones..." — Filipenses 4:7',
     'dailytext.open': 'Abrir',
 
     // Weekly Reading Card & Page
@@ -443,7 +449,9 @@ export const translations = {
     'dailytext.title': 'TESTO GIORNALIERO',
     'dailytext.mark_read': 'Segna come letto',
     'dailytext.marked_read': '✓ Letto',
-    'dailytext.day_streak': '{count} {count, plural, one {giorno}, other {giorni}}',
+    'dailytext.day_streak_singular': 'giorno',
+    'dailytext.day_streak_plural': 'giorni',
+    'dailytext.preview': '"La pace di Dio custodisca i vostri cuori..." — Filippesi 4:7',
     'dailytext.open': 'Apri',
 
     // Weekly Reading Card & Page
@@ -564,7 +572,9 @@ export const translations = {
     'dailytext.title': 'TEXTE QUOTIDIEN',
     'dailytext.mark_read': 'Marquer comme lu',
     'dailytext.marked_read': '✓ Lu',
-    'dailytext.day_streak': '{count} {count, plural, one {jour}, other {jours}}',
+    'dailytext.day_streak_singular': 'jour',
+    'dailytext.day_streak_plural': 'jours',
+    'dailytext.preview': '"Que la paix de Dieu, qui dépasse toute compréhension, garde vos cœurs..." — Philippiens 4:7',
     'dailytext.open': 'Ouvrir',
 
     // Weekly Reading Card & Page

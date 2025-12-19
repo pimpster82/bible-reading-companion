@@ -47,8 +47,7 @@ const DailyTextCard = () => {
       </h2>
 
       <p className="text-sm text-gray-700 mb-3 italic">
-        "Let the peace of God rule in your hearts..."
-        <span className="block text-gray-600 mt-1">— Colossians 3:15</span>
+        {t('dailytext.preview')}
       </p>
 
       <div className="flex items-center gap-2 mb-3">
@@ -70,7 +69,7 @@ const DailyTextCard = () => {
           {streak > 0 && (
             <p className="text-xs text-indigo-700 flex items-center gap-1">
               <Flame className="w-3 h-3" />
-              <span className="font-bold">{streak} {streak === 1 ? 'Tag' : 'Tage'}</span>
+              <span className="font-bold">{streak} {streak === 1 ? t('dailytext.day_streak_singular') : t('dailytext.day_streak_plural')}</span>
             </p>
           )}
         </div>
