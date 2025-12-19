@@ -67,25 +67,11 @@ const SettingsPage = () => {
   }
 
   const handleFetchSchedule = () => {
-    // Show instructions for using the Node.js script instead of browser-based fetch
+    // Show simplified instructions for loading schedule
     setScheduleStatus('info')
-    setScheduleMessage(`📖 Leseplan & Jahrestext für ${scheduleYear} herunterladen
+    setScheduleMessage(`📖 Leseplan & Jahrestext für ${scheduleYear}
 
-Um den Leseplan und Jahrestext für ${scheduleYear} zu laden, führe diesen Befehl im Terminal aus:
-
-   node scripts/parse-daily-texts.js ${scheduleYear}
-
-Das Skript wird automatisch:
-✅ Den wöchentlichen Leseplan von JW.org laden
-✅ Den Jahrestext für ${scheduleYear} abrufen
-✅ Alle Dateien im data/ Ordner erstellen
-✅ Die Loader-Dateien automatisch aktualisieren
-
-Danach ist alles fertig - keine manuellen Schritte nötig!
-
-Alternative: Direktlinks
-📅 Leseplan: https://wol.jw.org/en/wol/d/r1/lp-e/110${scheduleYear}214
-📖 Jahrestext: https://wol.jw.org/en/wol/d/r1/lp-e/110${scheduleYear}212`)
+Diese Funktion wird in einer zukünftigen Version implementiert. Der Leseplan wird automatisch aus den Dateien im data/ Ordner geladen.`)
   }
 
 
@@ -463,50 +449,9 @@ Alternative: Direktlinks
               )}
 
               <div className="text-xs text-gray-500 mt-3 space-y-1">
-                {scheduleStatus === 'error' ? (
-                  <div className="bg-yellow-50 border border-yellow-200 p-3 rounded">
-                    <p className="font-semibold text-yellow-900 mb-2">⚠️ Alternative: Manuelle Erstellung</p>
-                    <p className="mb-2">Falls der automatische Download nicht funktioniert:</p>
-                    <ol className="list-decimal list-inside ml-2 space-y-1 text-yellow-900">
-                      <li>Öffne Terminal im Projektordner</li>
-                      <li>Führe aus: <code className="bg-yellow-100 px-1 rounded">node scripts/parse-daily-texts.js</code></li>
-                      <li>Oder besuche direkt:
-                        <br/>
-                        <a
-                          href={`https://wol.jw.org/en/wol/d/r1/lp-e/110${scheduleYear}214`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-600 hover:underline text-xs break-all"
-                        >
-                          Leseplan {scheduleYear}
-                        </a>
-                        <br/>
-                        <a
-                          href={`https://wol.jw.org/en/wol/d/r1/lp-e/110${scheduleYear}212`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-600 hover:underline text-xs break-all"
-                        >
-                          Jahrestext {scheduleYear}
-                        </a>
-                      </li>
-                    </ol>
-                  </div>
-                ) : (
-                  <>
-                    <p>💡 <strong>Nach dem Download:</strong></p>
-                    <ol className="list-decimal list-inside ml-2 space-y-1">
-                      <li>Entpacke die heruntergeladene ZIP-Datei</li>
-                      <li>Kopiere <strong>alle Dateien</strong> in den <code>data/</code> Ordner</li>
-                      <li>Fertig! Leseplan und Jahrestext sind automatisch integriert.</li>
-                    </ol>
-                    <p className="mt-2 bg-blue-50 border border-blue-200 p-2 rounded">
-                      📦 <strong>Enthalten:</strong> Wöchentlicher Leseplan + Jahrestext (Themavers)<br/>
-                      ✨ <strong>Vollautomatisch:</strong> Die 3 Code-Zeilen werden automatisch hinzugefügt!
-                    </p>
-                    <p className="mt-2">📖 Details: <code>data/WEEKLY_SCHEDULE_README.md</code></p>
-                  </>
-                )}
+                <p className="text-gray-600">
+                  Der Leseplan wird automatisch aus den vorhandenen Dateien geladen.
+                </p>
               </div>
             </div>
           )}
